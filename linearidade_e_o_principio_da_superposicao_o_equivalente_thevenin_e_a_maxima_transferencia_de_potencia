@@ -1,0 +1,71 @@
+\documentclass[a4paper, 12pt]{article}
+
+% --- PACOTES ---
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{amsmath}        % Pacote para ambientes matemáticos como 'align*' e 'cases'
+\usepackage{float}          % Para melhor controle de posicionamento [H]
+\usepackage{siunitx}        % Para formatar unidades (ex: 5 V, 1 kOhm)
+\sisetup{
+output-decimal-marker = {,}, % Usa vírgula como separador decimal
+per-mode = symbol
+}
+\title{Capítulo 5 - Linearidade e o Princípio da Superposição, o Equivalente Thévenin e a Máxima Transferência de Potência}
+\author{Gabriel Franklin Lopes de Oliveira \\
+Guido Piancastelli Ramos \\
+Matheus Muniz Soares
+}
+\date{10 de Setembro de 2025}
+
+\begin{document}
+
+\maketitle
+
+%======================================================================
+% SEÇÃO 1: INTRODUÇÃO
+%======================================================================
+\section{Introdução}
+
+%======================================================================
+% SEÇÃO 2: OBJETIVOS
+%======================================================================
+\section{Objetivos}
+
+%======================================================================
+% SEÇÃO 3: CÁLCULOS TEÓRICOS
+%======================================================================
+\section{Cálculos teóricos}
+
+%======================================================================
+% SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
+%======================================================================
+\section{Procedimentos Experimentais}
+
+%======================================================================
+% SEÇÃO 5: SIMULAÇÃO E RESULTADOS
+%======================================================================
+\section{Simulação e Resultados}
+
+%======================================================================
+% SEÇÃO 6: QUESTÕES PARA O RELATÓRIO
+%======================================================================
+\section{Questões para o Relatório}
+
+%======================================================================
+% SEÇÃO 7: CONCLUSÃO
+%======================================================================
+\section{Conclusão}
+
+%======================================================================
+% SEÇÃO 8: REFERÊNCIAS
+%======================================================================
+\begin{thebibliography}{9}
+
+\bibitem{nilsson}
+NILSSON, James W.; RIEDEL, Susan A. \textit{Circuitos Elétricos}. 10. ed.
+\end{thebibliography}
+
+\end{document}
