@@ -1,0 +1,375 @@
+\documentclass[a4paper, 12pt]{article}
+
+% --- PACOTES ---
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{amsmath}        % Pacote para ambientes matemáticos como 'align*' e 'cases'
+\usepackage{float}          % Para melhor controle de posicionamento [H]
+\usepackage{siunitx}        % Para formatar unidades (ex: 5 V, 1 kOhm)
+\sisetup{
+output-decimal-marker = {,}, % Usa vírgula como separador decimal
+per-mode = symbol
+}
+
+% --- INFORMAÇÕES DO DOCUMENTO ---
+\title{Capítulo 3 - Laboratório de Circuitos Elétricos \\ Análise nodal e análise de malhas}
+\author{Gabriel Franklin Lopes de Oliveira \\
+Guido Piancastelli Ramos \\
+Matheus Muniz Soares
+}
+\date{27 de Agosto de 2025}
+
+\begin{document}
+
+\maketitle
+
+%======================================================================
+% SEÇÃO 1: INTRODUÇÃO
+%======================================================================
+\section{Introdução}
+
+A análise de circuitos elétricos é fundamental para a engenharia e a física, permitindo a compreensão e o projeto de sistemas complexos. A Lei de Ohm é a ferramenta mais elementar para essa análise, relacionando tensão, corrente e resistência em componentes simples. No entanto, para circuitos com múltiplas fontes de tensão ou com arranjos complexos de resistores (que não podem ser simplificados por associações em série ou paralelo), a Lei de Ohm por si só é insuficiente.
+
+Para superar essa limitação, o físico alemão \textbf{Gustav Kirchhoff} formulou, em 1845, duas leis fundamentais que governam a distribuição de corrente e tensão em qualquer circuito elétrico. Essas leis são generalizações diretas de princípios de conservação da física e fornecem um método sistemático e poderoso para a análise de circuitos lineares.
+
+\subsection{Primeira Lei de Kirchhoff (Lei dos Nós ou LKC)}
+A Primeira Lei de Kirchhoff, também conhecida como Lei das Correntes de Kirchhoff (LKC) ou Lei dos Nós, é baseada no \textbf{princípio da conservação da carga elétrica}. Este princípio estabelece que a carga elétrica não pode ser criada nem destruída. Em um circuito em regime estacionário, não há acúmulo de cargas em nenhum ponto, incluindo os nós. Um nó é definido como um ponto de junção onde três ou mais condutores se encontram.
+
+A lei postula que:
+\begin{quote}
+\textit{A soma algébrica das correntes que entram em qualquer nó de um circuito é igual a zero.}
+\end{quote}
+Matematicamente, para um nó com $n$ ramos, a lei é expressa como:
+\begin{equation}
+\sum_{k=1}^{n} I_k = 0
+\label{eq:lkc}
+\end{equation}
+Onde $I_k$ representa a k-ésima corrente que converge para o nó. Por convenção, as correntes que chegam ao nó são consideradas positivas, enquanto as correntes que saem do nó são consideradas negativas (ou vice-versa, desde que a convenção seja consistente).
+
+\subsection{Segunda Lei de Kirchhoff (Lei das Malhas ou LKT)}
+A Segunda Lei de Kirchhoff, conhecida como Lei das Tensões de Kirchhoff (LKT) ou Lei das Malhas, deriva do \textbf{princípio da conservação da energia}. Este princípio, aplicado a circuitos elétricos, implica que a energia total ganha ou perdida por uma carga ao percorrer um caminho fechado (uma malha) e retornar ao seu ponto inicial deve ser nula.
+
+A lei afirma que:
+\begin{quote}
+\textit{A soma algébrica das diferenças de potencial (tensões) ao longo de qualquer malha fechada de um circuito é igual a zero.}
+\end{quote}
+A expressão matemática para uma malha qualquer é:
+\begin{equation}
+\sum_{k=1}^{n} V_k = 0
+\label{eq:lkt}
+\end{equation}
+Onde $V_k$ é a k-ésima diferença de potencial na malha. Ao aplicar a LKT, é crucial adotar uma convenção de sinais. Geralmente, ao percorrer a malha em um sentido definido:
+\begin{itemize}
+\item A tensão em uma fonte é positiva se a travessia for do terminal negativo para o positivo (ganho de potencial).
+\item A tensão em um resistor é negativa se a travessia for no mesmo sentido da corrente (queda de potencial, $V = -IR$).
+\end{itemize}
+
+%======================================================================
+% SEÇÃO 2: OBJETIVOS
+%======================================================================
+\section{Objetivos}
+
+Este experimento tem como finalidade aprofundar a compreensão teórica e prática da análise de circuitos em corrente contínua. Os objetivos específicos são:
+
+\begin{itemize}
+\item \textbf{Geral:} Verificar as Leis de Tensões (LTK) e de Correntes (LCK) de Kirchhoff utilizando a
+análise nodal e análise de malha.
+\item \textbf{Específicos:}
+\begin{itemize}
+    \item Determinar teoricamente as correntes e as quedas de tensão nos componentes do circuito utilizando o método da análise de malhas.
+    \item Realizar a montagem prática do circuito em protoboard.
+    \item Medir experimentalmente as tensões e correntes no circuito utilizando um multímetro.
+    \item Comparar os resultados obtidos através dos cálculos teóricos, da simulação computacional (LTspice) e das medições experimentais, analisando as possíveis fontes de erro.
+\end{itemize}
+\end{itemize}
+
+%======================================================================
+% SEÇÃO 3: CÁLCULOS TEÓRICOS
+%======================================================================
+\section{Cálculos teóricos}
+
+\subsection{Análise do Circuito}
+O objetivo deste experimento é analisar o circuito elétrico apresentado na Figura 1, determinando as correntes e as quedas de tensão em cada um de seus componentes. A análise será realizada pelo método das malhas, que é uma aplicação direta da Segunda Lei de Kirchhoff.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{circuito.jpg}
+\caption{Diagrama esquemático do circuito elétrico a ser analisado. Estão indicados os nós (a, b, c, d, e), os sentidos convencionais das correntes (I\textsubscript{s}, I\textsubscript{1} a I\textsubscript{5}) e a polaridade das quedas de tensão (V\textsubscript{1} a V\textsubscript{5}) nos resistores.}
+\label{fig:diagrama_circuito_analise}
+\end{figure}
+
+\subsection{Equacionamento do Circuito por Malhas}
+Aplicamos a Lei das Tensões de Kirchhoff (LKT), $\sum V = 0$, para cada malha independente do circuito, definindo as correntes de malha $I_1$ (malha da esquerda) e $I_2$ (malha da direita) no sentido horário.
+
+\subsubsection{Equação da Malha 1}
+Percorrendo a malha da esquerda, temos:
+\begin{equation}
++V_S - V_{1} - V_{2} - V_{5} = 0
+\end{equation}
+Substituindo as quedas de tensão ($V_R = R \cdot I$), e notando que a corrente em $R_2$ é a diferença $(I_1 - I_2)$:
+\begin{equation}
+V_S - R_1 I_1 - R_2 (I_1 - I_2) - R_5 I_1 = 0
+\end{equation}
+Substituindo os valores numéricos (resistências em k$\Omega$ e tensão em V, resultando em correntes em mA):
+\begin{align*}
+5 - 1 \cdot I_1 - 2.2(I_1 - I_2) - 1.2 \cdot I_1 &= 0 \\
+5 - I_1 - 2.2 I_1 + 2.2 I_2 - 1.2 I_1 &= 0 \\
+-4.4 I_1 + 2.2 I_2 &= -5
+\end{align*}
+A primeira equação do sistema é:
+\begin{equation}
+\label{eq:malha1}
+4.4 I_1 - 2.2 I_2 = 5
+\end{equation}
+
+\subsubsection{Equação da Malha 2}
+Percorrendo a malha da direita, a soma das tensões é:
+\begin{equation}
+-V_{3} - V_{4} + V_{2} = 0
+\end{equation}
+A corrente em $R_2$  é $(I_1 - I_2)$:
+\begin{equation}
+-R_3 I_2 - R_4 I_2 + R_2 (I_1 - I_2) = 0
+\end{equation}
+Substituindo os valores:
+\begin{align*}
+-1.2 I_2 - 1 \cdot I_2 + 2.2(I_1 - I_2) &= 0 \\
+2.2 I_1 - (1.2 + 1 + 2.2)I_2 &= 0
+\end{align*}
+A segunda equação do sistema é:
+\begin{equation}
+\label{eq:malha2}
+2.2 I_1 - 4.4 I_2 = 0
+\end{equation}
+
+\subsection{Resolução do Sistema Linear e Resultados Teóricos}
+O sistema de equações a ser resolvido é:
+\begin{equation}
+\begin{cases}
+4.4 I_1 - 2.2 I_2 = 5 & \text{(I)} \\
+2.2 I_1 - 4.4 I_2 = 0 & \text{(II)}
+\end{cases}
+\end{equation}
+Da equação (II), isolamos $I_1$: $I_1 = 2 I_2$. Substituindo em (I):
+\begin{align*}
+4.4 (2 I_2) - 2.2 I_2 &= 5 \\
+6.6 I_2 &= 5 \implies I_2 = \frac{5}{6.6} \approx \SI{0.758}{\milli\ampere}
+\end{align*}
+Consequentemente, $I_1 = 2 \cdot I_2 \approx \SI{1.515}{\milli\ampere}$.
+
+\subsubsection*{Correntes Calculadas}
+\begin{itemize}
+\item $I_{1} = I_1 = \SI{1.515}{\milli\ampere}$
+\item $I_{2} = I_1 - I_2 = 1.515 - 0.758 = \SI{0.757}{\milli\ampere}$
+\item $I_{3} = I_2 = \SI{0.758}{\milli\ampere}$
+\item $I_{4} = I_2 = \SI{0.758}{\milli\ampere}$
+\item $I_{5} = I_1 = \SI{1.515}{\milli\ampere}$
+\end{itemize}
+
+\subsubsection*{Tensões Calculadas ($V = R \cdot I$)}
+\begin{itemize}
+\item $V_{1} = \SI{1}{\kilo\ohm} \times \SI{1.515}{\milli\ampere} = \SI{1.515}{\volt}$
+\item $V_{2} = \SI{2.2}{\kilo\ohm} \times \SI{0.757}{\milli\ampere} = \SI{1.665}{\volt}$
+\item $V_{3} = \SI{1.2}{\kilo\ohm} \times \SI{0.758}{\milli\ampere} = \SI{0.909}{\volt}$
+\item $V_{4} = \SI{1}{\kilo\ohm} \times \SI{0.758}{\milli\ampere} = \SI{0.758}{\volt}$
+\item $V_{5} = \SI{1.2}{\kilo\ohm} \times \SI{1.515}{\milli\ampere} = \SI{1.818}{\volt}$
+\end{itemize}
+
+%======================================================================
+% SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
+%======================================================================
+\section{Procedimentos Experimentais}
+
+A parte prática do experimento consistiu na montagem e medição do circuito elétrico para validar os cálculos teóricos e a simulação. Os passos seguidos estão descritos abaixo.
+
+\subsection{Materiais Utilizados}
+\begin{itemize}
+\item 1 Fonte de alimentação DC ajustável.
+\item 1 Multímetro digital (utilizado como voltímetro, amperímetro e ohmímetro).
+\item 1 Protoboard (matriz de contatos).
+\item 5 Resistores com os seguintes valores nominais: $R_1=\SI{1}{\kilo\ohm}$, $R_2=\SI{2.2}{\kilo\ohm}$, $R_3=\SI{1.2}{\kilo\ohm}$, $R_4=\SI{1}{\kilo\ohm}$, $R_5=\SI{1.2}{\kilo\ohm}$.
+\item Fios de conexão (jumpers).
+\end{itemize}
+
+\subsection{Montagem e Medições}
+\begin{enumerate}
+\item \textbf{Medição dos Resistores:} Antes de montar o circuito, o valor real de cada resistor foi medido utilizando o multímetro na função de ohmímetro. Os valores medidos foram anotados na Tabela \ref{tab:resistencias} para posterior análise de discrepâncias.
+
+\item \textbf{Montagem do Circuito:} O circuito foi montado na protoboard conforme o diagrama esquemático da Figura \ref{fig:diagrama_circuito_analise}. Os componentes foram posicionados de forma a garantir conexões elétricas firmes e a correta topologia do circuito.
+
+\item \textbf{Ajuste da Fonte de Tensão:} A fonte de alimentação DC foi ajustada para fornecer uma tensão de saída de \SI{5.0}{\volt}, que foi aferida com o multímetro para garantir a precisão. A fonte foi então conectada aos pontos 'a' (terminal positivo) e 'e' (terminal negativo) do circuito.
+
+\item \textbf{Medição das Tensões:} Com o circuito energizado, o multímetro foi configurado para a função de voltímetro (DCV). As quedas de tensão em cada resistor ($V_1$ a $V_5$) foram medidas colocando-se as pontas de prova em paralelo com cada componente, respeitando a polaridade indicada no diagrama. Os resultados foram registrados na Tabela \ref{tab:tensoes}.
+
+\item \textbf{Medição das Correntes:} Para medir a corrente em cada ramo, o multímetro foi configurado como amperímetro (DCA). Para cada medição (de $I_1$ a $I_5$), foi necessário abrir o circuito no ponto desejado e inserir o multímetro em série, de modo que a corrente passasse através do instrumento. Os valores medidos foram anotados na Tabela \ref{tab:correntes}.
+\end{enumerate}
+
+%======================================================================
+% SEÇÃO 5: SIMULAÇÃO E RESULTADOS
+%======================================================================
+\section{Simulação e Resultados}
+
+Para validar os valores teóricos calculados e realizar as devidas comparações, o circuito foi simulado no software \textbf{LTspice}, como mostra a Figura \ref{fig:simulacao_ltspice}. \\ \\
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{ltspice.png}
+\caption{Simulação do circuito no software LTspice para obtenção dos valores de tensão e corrente.}
+\label{fig:simulacao_ltspice}
+\end{figure}
+
+Os resultados obtidos na simulação, juntamente com os valores calculados e os medidos experimentalmente, são apresentados nas tabelas a seguir.
+
+\begin{table}[H]
+\centering
+\caption{Valores de resistência}
+\label{tab:resistencias}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Nominal (\si{\kilo\ohm})} & \textbf{Medido (\si{\kilo\ohm})} & \textbf{E (\%)} \\
+\hline
+$R_1$ & 1,0 & 0,989 & 1,1 \\ \hline
+$R_2$ & 2,2 & 2,180 & 0,9 \\ \hline
+$R_3$ & 1,2 & 1,180 & 1.7 \\ \hline
+$R_4$ & 1,0 & 0,991 & 0.9 \\ \hline
+$R_5$ & 1,2 & 1,177 & 1.9 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[H]
+\centering
+\caption{Valores de tensão}
+\label{tab:tensoes}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (V)} & \textbf{Simulado (V)} & \textbf{Medido (V)} & \textbf{E (\%)} \\
+\hline
+$V_1$ & 1,515 & 1,515 & 1,51 & 0.3 \\ \hline
+$V_2$ & 1,665 & 1,665 & 1,67 & 0.3 \\ \hline
+$V_3$ & 0,909 & 0,909 & 0,90 & 1.0 \\ \hline
+$V_4$ & 0,758 & 0,758 & 0,76 & 0.3 \\ \hline
+$V_5$ & 1,818 & 1,818 & 1,81 & 0.4 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Valores de corrente}
+\label{tab:correntes}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (mA)} & \textbf{Simulado (mA)} & \textbf{Medido (mA)} & \textbf{E (\%)} \\
+\hline
+$I_1$ & 1,515 & 1,515 & 1,492 & 1.5 \\ \hline
+$I_2$ & 0,757 & 0,757 & 0,745 & 1.6 \\ \hline
+$I_3$ & 0,758 & 0,758 & 0,753 & 0.7 \\ \hline
+$I_4$ & 0,758 & 0,758 & 0,753 & 0.7 \\ \hline
+$I_5$ & 1,515 & 1,515 & 1,498 & 1.1 \\ \hline
+\end{tabular}
+\end{table}
+
+%======================================================================
+% SEÇÃO 6: QUESTÕES PARA O RELATÓRIO
+%======================================================================
+\section{Questões para o Relatório}
+
+\subsection{Verificação da Lei das Correntes de Kirchhoff (LCK)}
+
+A Lei das Correntes de Kirchhoff (LCK) afirma que a soma algébrica das correntes que entram e saem de qualquer nó em um circuito deve ser igual a zero ($\sum I = 0$). Para a verificação, adotaremos a convenção de que as correntes que \textbf{entram} no nó são \textbf{positivas (+)} e as que \textbf{saem} são \textbf{negativas (-)}. Utilizaremos os valores de corrente medidos na Tabela \ref{tab:correntes}.
+
+\subsubsection{Nó b}
+Neste nó, a corrente $I_1$ entra, enquanto as correntes $I_2$ e $I_3$ saem.
+\begin{equation*}
+I_1 - I_2 - I_3 = 0
+\end{equation*}
+Substituindo os valores medidos:
+\begin{equation*}
+\SI{1.492}{\milli\ampere} - \SI{0.745}{\milli\ampere} - \SI{0.753}{\milli\ampere} = \SI{-0.006}{\milli\ampere}
+\end{equation*}
+\textbf{Análise:} O resultado é um valor extremamente próximo de zero. A pequena diferença de \SI{-0.006}{\milli\ampere} é perfeitamente aceitável e pode ser atribuída às imprecisões do multímetro e às pequenas flutuações na medição, validando a LCK para este nó.
+
+\subsubsection{Nó d}
+Neste nó, as correntes $I_2$ e $I_4$ entram, enquanto a corrente $I_5$ sai.
+\begin{equation*}
+I_2 + I_4 - I_5 = 0
+\end{equation*}
+Substituindo os valores medidos:
+\begin{equation*}
+\SI{0.745}{\milli\ampere} + \SI{0.753}{\milli\ampere} - \SI{1.498}{\milli\ampere} = \SI{0.000}{\milli\ampere}
+\end{equation*}
+\textbf{Análise:} A soma resultou em exatamente zero, o que representa uma validação perfeita da LCK para o nó d com os dados medidos.
+
+\subsubsection{Nós a, c e e (Nós de Passagem)}
+Esses nós conectam apenas dois componentes, servindo para demonstrar a continuidade da corrente.
+\begin{itemize}
+\item \textbf{Nó a:} A corrente da fonte $I_S$ entra e $I_1$ sai. A LCK prevê $I_S = I_1$.
+\item \textbf{Nó c:} A corrente $I_3$ entra e $I_4$ sai. A LCK prevê $I_3 = I_4$. Nossos valores medidos ($\SI{0.753}{\milli\ampere} = \SI{0.753}{\milli\ampere}$) confirmam isso.
+\item \textbf{Nó e:} A corrente $I_5$ entra e retorna para a fonte. A LCK prevê que a corrente que sai do nó 'a' deve retornar ao nó 'e'.
+\end{itemize}
+
+\subsection{Verificação da Lei das Tensões de Kirchhoff (LTK)}
+
+A Lei das Tensões de Kirchhoff (LTK) afirma que a soma algébrica das tensões ao longo de qualquer malha fechada é igual a zero ($\sum V = 0$). Assumindo que a questão se refere às malhas do circuito, faremos a verificação para as três malhas principais. Adotaremos a convenção de que, ao percorrer a malha, um ganho de potencial (passar do terminal - para o + de uma fonte, ou contra o sentido da corrente em um resistor) é \textbf{positivo (+)}, e uma queda de potencial (passar no sentido da corrente em um resistor) é \textbf{negativa (-)}. Utilizaremos os valores de tensão medidos na Tabela \ref{tab:tensoes} e a tensão da fonte $V_S = \SI{5.0}{\volt}$.
+
+\subsubsection{Malha 1 (Esquerda: a-b-d-e-a)}
+Percorrendo a malha no sentido horário, temos o ganho da fonte e as quedas em $R_1$, $R_2$ e $R_5$.
+\begin{equation*}
++V_S - V_1 - V_2 - V_5 = 0
+\end{equation*}
+Substituindo os valores medidos:
+\begin{equation*}
+\SI{5.0}{\volt} - \SI{1.51}{\volt} - \SI{1.67}{\volt} - \SI{1.81}{\volt} = \SI{+0.01}{\volt}
+\end{equation*}
+\textbf{Análise:} O resultado de \SI{+0.01}{\volt} é praticamente nulo. A pequena discrepância é esperada e se deve à tolerância dos resistores e à precisão dos instrumentos, validando a LTK para esta malha.
+
+\subsubsection{Malha 2 (Direita: b-c-d-b)}
+Percorrendo a malha no sentido horário (b $\rightarrow$ c $\rightarrow$ d $\rightarrow$ b), temos quedas em $R_3$ e $R_4$, e um ganho de potencial em $R_2$ (pois a percorremos contra o sentido da corrente $I_2$).
+\begin{equation*}
+-V_3 - V_4 + V_2 = 0
+\end{equation*}
+Substituindo os valores medidos:
+\begin{equation*}
+-\SI{0.90}{\volt} - \SI{0.76}{\volt} + \SI{1.67}{\volt} = \SI{+0.01}{\volt}
+\end{equation*}
+\textbf{Análise:} Novamente, a soma resulta em um valor muito próximo de zero, confirmando a validade da LTK para a malha da direita.
+
+\subsubsection{Malha 3 (Externa: a-b-c-d-e-a)}
+Percorrendo a malha externa no sentido horário, temos o ganho da fonte e as quedas em $R_1$, $R_3$, $R_4$ e $R_5$.
+\begin{equation*}
++V_S - V_1 - V_3 - V_4 - V_5 = 0
+\end{equation*}
+Substituindo os valores medidos:
+\begin{equation*}
+\SI{5.0}{\volt} - \SI{1.51}{\volt} - \SI{0.90}{\volt} - \SI{0.76}{\volt} - \SI{1.81}{\volt} = \SI{+0.02}{\volt}
+\end{equation*}
+\textbf{Análise:} A soma resulta em \SI{+0.02}{\volt}, um valor residual baixo que confirma que a lei se mantém, mesmo considerando o acúmulo das pequenas incertezas de medição de quatro resistores diferentes.
+
+%======================================================================
+% SEÇÃO 7: CONCLUSÃO
+%======================================================================
+\section{Conclusão}
+
+O presente experimento permitiu a aplicação prática da análise de circuitos elétricos por meio das Leis de Kirchhoff, especificamente utilizando o método das malhas. O objetivo de determinar as correntes e tensões no circuito proposto foi alcançado com sucesso, e os resultados obtidos por três vias distintas — cálculo teórico, simulação computacional e medição experimental — foram comparados.
+
+Observou-se uma concordância quase perfeita entre os valores calculados teoricamente e os obtidos na simulação com o software LTspice. Isso era esperado, uma vez que a simulação utiliza um modelo matemático ideal, idêntico ao empregado nos cálculos manuais.
+
+Ao comparar os dados teóricos com os resultados experimentais, notam-se pequenas discrepâncias, que são totalmente justificáveis no contexto de um laboratório. A principal fonte de erro reside na \textbf{tolerância dos resistores}, cujos valores medidos (Tabela \ref{tab:resistencias}) desviam-se ligeiramente dos seus valores nominais. Essa variação nos componentes altera a distribuição real de corrente e tensão no circuito. Outras fontes de erro incluem a \textbf{precisão limitada dos instrumentos de medição} (multímetro e fonte de tensão) e as \textbf{resistências parasitas} dos fios de conexão e dos contatos da protoboard, que não são consideradas no modelo teórico.
+
+Apesar dessas pequenas diferenças, os valores medidos mostraram-se muito próximos dos previstos, validando de forma robusta tanto a Segunda Lei de Kirchhoff (Lei das Malhas) quanto o método de análise empregado. O experimento demonstrou ser uma ferramenta eficaz para consolidar a compreensão teórica, evidenciando a ponte entre os modelos matemáticos ideais e o comportamento de circuitos físicos reais.
+
+
+%======================================================================
+% SEÇÃO 8: REFERÊNCIAS
+%======================================================================
+\begin{thebibliography}{9}
+
+\bibitem{nilsson}
+NILSSON, James W.; RIEDEL, Susan A. \textit{Circuitos Elétricos}. 10. ed.
+\end{thebibliography}
+
+\end{document}
