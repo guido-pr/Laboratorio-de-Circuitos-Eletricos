@@ -58,7 +58,7 @@ I_2 = I_s \cdot \frac{R_1}{R_1 + R_2}
 \end{equation}
 Note que, ao contrário do divisor de tensão, a corrente que flui por um ramo é inversamente proporcional à sua resistência. Ou seja, a maior parcela da corrente sempre seguirá o caminho de menor resistência.
 
-\subsection{A Ponte de Wheatstone: Uma Aplicação de Precisão}
+\subsection{A Ponte de Wheatstone}
 A Ponte de Wheatstone representa uma das aplicações mais notáveis do princípio do divisor de tensão. O circuito consiste em dois divisores de tensão conectados em paralelo a uma mesma fonte $V_s$. Um medidor de tensão (galvanômetro) é conectado entre os pontos centrais dos dois divisores para medir a diferença de potencial, $V_d$.
 
 A principal utilidade da ponte é a medição de uma resistência desconhecida ($R_x$) com altíssima precisão. Isso é alcançado quando a ponte está em \textbf{equilíbrio}, condição na qual a tensão diferencial $V_d$ é exatamente zero. Para que $V_d = 0$, as tensões nos pontos centrais de cada divisor devem ser idênticas. Igualando as equações do divisor de tensão para cada lado (assumindo uma configuração com resistores $R_1, R_2, R_3, R_x$), temos:
@@ -78,6 +78,20 @@ O presente relatório tem como objetivo a verificação experimental destes trê
 % SEÇÃO 2: OBJETIVOS
 %======================================================================
 \section{Objetivos}
+
+Este experimento tem como finalidade aprofundar a compreensão teórica e prática da análise de circuitos em corrente contínua. Os objetivos são:
+
+\begin{itemize}
+\item \textbf{Geral:}  Verificar as propriedades dos circuitos básicos para atenuação de corrente e de
+tensão. E verificar as propriedades da ponte de Wheatstone
+\item \textbf{Específicos:}
+\begin{itemize}
+    \item Determinar teoricamente as correntes e as quedas de tensão nos componentes do circuito utilizando divisão de corrente e de tensão e ponte de Wheatstone.
+    \item Realizar a montagem prática do circuito em protoboard.
+    \item Medir experimentalmente as tensões e correntes no circuito utilizando um multímetro.
+    \item Comparar os resultados obtidos através dos cálculos teóricos, da simulação computacional (LTspice) e das medições experimentais, analisando as possíveis fontes de erro.
+\end{itemize}
+\end{itemize}
 
 %======================================================================
 % SEÇÃO 3: CÁLCULOS TEÓRICOS
@@ -242,11 +256,54 @@ V_d &= 4,12 - 4,24 \approx \SI{-0,12}{\volt}.
 % SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
 %======================================================================
 \section{Procedimentos Experimentais}
+A parte prática do experimento consistiu na montagem e medição de três configurações de circuitos elétricos para validar os conceitos teóricos de divisores de tensão, divisores de corrente e da ponte de Wheatstone. Os passos seguidos estão descritos abaixo.
+
+\subsection{Materiais Utilizados}
+\begin{itemize}
+\item 1 Fonte de alimentação DC ajustável.
+\item 1 Multímetro digital (utilizado como voltímetro, amperímetro e ohmímetro).
+\item 1 Protoboard (matriz de contatos).
+\item Resistores com os seguintes valores nominais: \SI{5,6}{\kilo\ohm}, \SI{1,2}{\kilo\ohm}, \SI{1}{\kilo\ohm} e \SI{8,2}{\mega\ohm}.
+\item Fios de conexão (jumpers).
+\end{itemize}
+
+\subsection{Montagem e Medições}
+Para cada circuito, a fonte de alimentação foi previamente ajustada e aferida com o multímetro para garantir a tensão de entrada correta.
+
+\subsubsection{Divisor de Corrente}
+\begin{enumerate}
+\item \textbf{Montagem do Circuito:} O circuito divisor de corrente foi montado na protoboard conforme o diagrama da Figura 1.
+
+\item \textbf{Medição das Correntes:} Com o circuito energizado, o multímetro foi configurado como amperímetro (DCA). As correntes nos ramos dos resistores R1 e R2 foram medidas inserindo-se o instrumento em série em cada ramo. Os valores medidos foram registrados na Tabela 6 para comparação com os valores calculados.
+\end{enumerate}
+
+\subsubsection{Divisor de Tensão}
+\begin{enumerate}
+\setcounter{enumi}{2} % Continua a numeração do passo anterior
+\item \textbf{Montagem do Circuito:} O circuito divisor de tensão foi montado na protoboard, de acordo com o esquemático da Figura 2.
+
+\item \textbf{Medição das Tensões:} Com o multímetro na função de voltímetro (DCV), foram medidas as quedas de tensão nos terminais dos resistores R1 e R2. As pontas de prova foram posicionadas em paralelo com cada componente. Os resultados foram anotados nas Tabelas 2 a 4.
+
+\item \textbf{Modificação do Circuito (Resistores Iguais):} Os resistores foram substituídos por dois componentes de valor nominal igual a \SI{5,6}{\kilo\ohm}. As medições de tensão foram refeitas e os resultados discutidos.
+
+\item \textbf{Análise com Alta Resistência:} O passo anterior foi repetido, desta vez utilizando resistores de \SI{8,2}{\mega\ohm}. Eventuais discrepâncias entre os valores medidos e esperados foram registradas para análise na seção de conclusão.
+\end{enumerate}
+
+\subsubsection{Ponte de Wheatstone}
+\begin{enumerate}
+\setcounter{enumi}{6} % Continua a numeração
+\item \textbf{Montagem da Ponte:} O circuito da ponte de Wheatstone foi montado conforme a Figura 3, utilizando inicialmente R1 = \SI{5,6}{\kilo\ohm} e R2 = \SI{1,2}{\kilo\ohm}.
+
+\item \textbf{Medição da Tensão de Desequilíbrio:} A tensão $V_d$ entre os nós centrais da ponte foi medida com o voltímetro. O valor foi registrado na Tabela 5.
+
+\item \textbf{Alteração da Ponte:} O resistor R2 do lado direito da ponte foi substituído por um de \SI{1}{\kilo\ohm}. A medição da tensão $V_d$ foi realizada novamente para observar a mudança no desequilíbrio da ponte.
+\end{enumerate}
 
 %======================================================================
 % SEÇÃO 5: SIMULAÇÃO E RESULTADOS
 %======================================================================
 \section{Simulação e Resultados}
+Para validar os valores teóricos calculados e realizar as devidas comparações, o circuito foi simulado no software \textbf{LTspice}. Os resultados obtidos na simulação, juntamente com os valores calculados e os medidos experimentalmente, são apresentados nas tabelas a seguir, com as respectivas imagens do circuito na simulação:
 
 \begin{figure}[H]
 \centering
@@ -304,8 +361,8 @@ $V_2$ & 0,882 & 0,882 & 0,87 & 1,36 \\ \hline
 \hline
 \textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
 \hline
-$V_1$ & 2,5 & 2,5 & 2,52 &      \\ \hline
-$V_2$ & 2,5 & 2,5 & 2,47 &      \\ \hline
+$V_1$ & 2,5 & 2,5 & 2,52 & 0.80\\ \hline
+$V_2$ & 2,5 & 2,5 & 2,47 & 1.20 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -324,8 +381,8 @@ $V_2$ & 2,5 & 2,5 & 2,47 &      \\ \hline
 \hline
 \textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
 \hline
-$V_1$ & 2,5 & 2,5 & 1,76 &      \\ \hline
-$V_2$ & 2,5 & 2,5 & 1,77 &      \\ \hline
+$V_1$ & 2,5 & 2,5 & 1,76 & 29.2\\ \hline
+$V_2$ & 2,5 & 2,5 & 1,77 & 29.6 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -351,10 +408,12 @@ $V_2$ & 2,5 & 2,5 & 1,77 &      \\ \hline
 \hline
 \textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
 \hline
-$V_{d1}$ & 0 & 0 & 0,015 &      \\ \hline
-$V_{d2}$ & -0,12 & 0,12 & 0,118 &      \\ \hline
+$V_{d1}$ & 0 & 0 & 0,015 & 0 \\ \hline
+$V_{d2}$ & -0,12 & 0,12 & 0,118 & 0,02 \\ \hline
 \end{tabular}
 \end{table}
+
+
 
 \begin{table}[H]
 \centering
@@ -395,7 +454,15 @@ De forma a obtermos $I_1$ e $I_2$ diretamente, não é possível, pois temos tam
 % SEÇÃO 7: CONCLUSÃO
 %======================================================================
 \section{Conclusão}
+O presente trabalho experimental permitiu a verificação prática dos princípios fundamentais do divisor de tensão, do divisor de corrente e da Ponte de Wheatstone. Ao comparar os valores obtidos por meio de cálculos teóricos, simulação computacional no LTspice e medições em laboratório, foi possível validar a teoria com um alto grau de precisão na maioria dos casos, além de identificar as limitações inerentes aos instrumentos de medição.
 
+A análise dos resultados demonstra que, para os circuitos com resistores na faixa de quilohms (\si{\kilo\ohm}), os valores medidos de tensão e corrente apresentaram excelente concordância com os valores teóricos e simulados. Os erros percentuais, em sua maioria inferiores a 2\%, são consistentes com as fontes de incerteza esperadas em um ambiente de laboratório, como a tolerância dos resistores (verificada na Tabela \ref{tab:resistencias}), pequenas flutuações na tensão da fonte e a precisão finita do multímetro.
+
+Uma notável e instrutiva exceção foi observada no teste do divisor de tensão com resistores de \SI{8,2}{\mega\ohm}. Neste caso, a discrepância entre o valor teórico (\SI{2,5}{\volt}) e o medido (aproximadamente \SI{1,76}{\volt}) foi de quase 30\%. Este erro significativo não se deve a uma falha na teoria, mas sim ao \textbf{efeito de carga} (loading effect) do voltímetro. O multímetro digital possui uma resistência interna finita (tipicamente da ordem de \SI{10}{\mega\ohm}). Ao medir a tensão em um resistor de valor comparável (\SI{8,2}{\mega\ohm}), a resistência do próprio instrumento se torna um caminho alternativo para a corrente, alterando a resistência equivalente do ramo e, consequentemente, a tensão que se deseja medir. Este resultado prático evidencia de forma clara que a impedância de entrada do instrumento de medição é um fator crítico que não pode ser ignorado ao se trabalhar com circuitos de alta impedância.
+
+Na análise da Ponte de Wheatstone, os resultados também foram conclusivos. A condição de equilíbrio foi quase perfeitamente atingida, com uma tensão diferencial medida de apenas \SI{15}{\milli\volt}, um valor residual atribuível às tolerâncias dos resistores. No caso desequilibrado, a tensão medida (\SI{0,118}{\volt}) foi extremamente próxima do valor calculado (\SI{0,12}{\volt}), validando o modelo matemático para a ponte.
+
+Portanto, conclui-se que os objetivos do experimento foram plenamente alcançados. As leis de divisão de tensão e corrente foram empiricamente confirmadas, e a aplicação prática desses conceitos na Ponte de Wheatstone foi demonstrada com sucesso. Mais importante, o experimento proporcionou uma valiosa lição sobre a interação entre o circuito e o instrumento de medição, reforçando a importância de se considerar as características não ideais dos componentes e equipamentos em qualquer análise de engenharia.
 
 %======================================================================
 % SEÇÃO 8: REFERÊNCIAS
@@ -408,6 +475,3 @@ NILSSON, James W.; RIEDEL, Susan A. \textit{Circuitos Elétricos}. 10. ed.
 \end{thebibliography}
 
 \end{document}
-
-
-
