@@ -1,0 +1,413 @@
+\documentclass[a4paper, 12pt]{article}
+
+% --- PACOTES ---
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}        % Pacote para ambientes matemáticos como 'align*' e 'cases'
+\usepackage{float}          % Para melhor controle de posicionamento [H]
+\usepackage{siunitx}        % Para formatar unidades (ex: 5 V, 1 kOhm)
+\sisetup{
+output-decimal-marker = {,}, % Usa vírgula como separador decimal
+per-mode = symbol
+}
+
+% --- INFORMAÇÕES DO DOCUMENTO ---
+\title{Laboratório de Circuitos Elétricos \\ Divisão de tensão e divisão de corrente}
+\author{Gabriel Franklin Lopes de Oliveira \\
+Guido Piancastelli Ramos \\
+Matheus Muniz Soares
+}
+\date{3 de Setembro de 2025}
+
+\begin{document}
+
+\maketitle
+
+%======================================================================
+% SEÇÃO 1: INTRODUÇÃO
+%======================================================================
+\section{Introdução}
+
+Na análise de circuitos elétricos, a capacidade de simplificar configurações complexas é essencial. Embora métodos robustos como as Leis de Kirchhoff permitam resolver qualquer circuito linear, o reconhecimento de padrões recorrentes oferece "atalhos" analíticos que aceleram o projeto e a compreensão intuitiva do comportamento do circuito. Entre os mais importantes desses padrões estão os circuitos divisores de tensão e de corrente, e a sua engenhosa combinação na Ponte de Wheatstone.
+
+Estes circuitos não são apenas artifícios teóricos, mas sim blocos de construção fundamentais em praticamente todos os domínios da eletrônica, desde a polarização de transistores até o funcionamento de sensores de alta precisão.
+
+\subsection{O Princípio do Divisor de Tensão}
+O divisor de tensão é uma configuração que consiste em dois ou mais resistores conectados em série a uma fonte de tensão. Sua principal função é produzir uma tensão de saída ($V_{out}$) que seja uma fração conhecida da tensão de entrada ($V_s$). Para um circuito com dois resistores, $R_1$ e $R_2$, a corrente total $I$ que os atravessa é dada pela Lei de Ohm aplicada à resistência série total:
+\[
+I = \frac{V_s}{R_1 + R_2}
+\]
+A tensão sobre o resistor $R_2$, que corresponde à saída $V_{out}$, é simplesmente $V_{out} = I \cdot R_2$. Substituindo a expressão da corrente, obtemos a fórmula do \textbf{divisor de tensão}:
+\begin{equation}
+V_{out} = V_s \cdot \frac{R_2}{R_1 + R_2}
+\label{eq:divisor_tensao}
+\end{equation}
+A equação demonstra que a tensão de entrada é dividida entre os resistores de forma diretamente proporcional aos seus valores de resistência.
+
+\subsection{O Princípio do Divisor de Corrente}
+De forma análoga, o divisor de corrente é o conceito dual que descreve como uma corrente de entrada ($I_s$) se distribui entre dois ou mais ramos paralelos. Em uma configuração com dois resistores em paralelo, $R_1$ e $R_2$, a tensão $V$ é a mesma em ambos. A corrente total se divide de acordo com a Lei das Correntes de Kirchhoff: $I_s = I_1 + I_2$.
+
+Para encontrar a corrente $I_2$ que flui através de $R_2$, podemos usar o fato de que a tensão no nó é $V = I_s \cdot (R_1 \parallel R_2)$. Assim, $I_2 = V/R_2$. Após a substituição e simplificação, chegamos à fórmula do \textbf{divisor de corrente}:
+\begin{equation}
+I_2 = I_s \cdot \frac{R_1}{R_1 + R_2}
+\label{eq:divisor_corrente}
+\end{equation}
+Note que, ao contrário do divisor de tensão, a corrente que flui por um ramo é inversamente proporcional à sua resistência. Ou seja, a maior parcela da corrente sempre seguirá o caminho de menor resistência.
+
+\subsection{A Ponte de Wheatstone: Uma Aplicação de Precisão}
+A Ponte de Wheatstone representa uma das aplicações mais notáveis do princípio do divisor de tensão. O circuito consiste em dois divisores de tensão conectados em paralelo a uma mesma fonte $V_s$. Um medidor de tensão (galvanômetro) é conectado entre os pontos centrais dos dois divisores para medir a diferença de potencial, $V_d$.
+
+A principal utilidade da ponte é a medição de uma resistência desconhecida ($R_x$) com altíssima precisão. Isso é alcançado quando a ponte está em \textbf{equilíbrio}, condição na qual a tensão diferencial $V_d$ é exatamente zero. Para que $V_d = 0$, as tensões nos pontos centrais de cada divisor devem ser idênticas. Igualando as equações do divisor de tensão para cada lado (assumindo uma configuração com resistores $R_1, R_2, R_3, R_x$), temos:
+\[
+V_s \cdot \frac{R_2}{R_1 + R_2} = V_s \cdot \frac{R_x}{R_3 + R_x}
+\]
+A simplificação algébrica desta igualdade leva à célebre \textbf{condição de equilíbrio da ponte}:
+\begin{equation}
+R_1 R_x = R_2 R_3
+\label{eq:ponte_equilibrio}
+\end{equation}
+Esta relação permite calcular $R_x$ com base nos valores conhecidos dos outros três resistores. O princípio da ponte desequilibrada ($V_d \neq 0$) também é a base para inúmeros sensores que medem grandezas físicas como pressão e deformação.
+
+O presente relatório tem como objetivo a verificação experimental destes três circuitos fundamentais. Serão comparados os valores teóricos, obtidos a partir das equações apresentadas, com os resultados de simulações computacionais e medições práticas, a fim de validar a teoria e quantificar as possíveis discrepâncias inerentes a um ambiente de laboratório.
+
+%======================================================================
+% SEÇÃO 2: OBJETIVOS
+%======================================================================
+\section{Objetivos}
+
+%======================================================================
+% SEÇÃO 3: CÁLCULOS TEÓRICOS
+%======================================================================
+\section{Cálculos teóricos}
+\subsection{Divisor de Corrente}
+\subsubsection{Forma genérica}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{divisor_de_corrente.png}
+\caption{Divisor de Corrente}
+\label{fig:divisor_de_corrente}
+\end{figure}
+
+% ERRO CORRIGIDO: Removido comando \maketitle duplicado que estava aqui.
+
+Utilizando o circuito da Figura~\ref{fig:divisor_de_corrente}, iremos determinar $I_1$ e $I_2$ em função de $I_s$, $R_1$ e $R_2$. Considere o nó superior comum a $R_1$ e $R_2$. Pela LKC (Lei de Kirchhoff das Correntes):
+\begin{equation}
+I_s = I_1 + I_2.
+\end{equation}
+A tensão no nó (em relação ao terra) é a mesma nos dois ramos:
+\begin{equation}
+V = I_1 R_1 = I_2 R_2.
+\end{equation}
+Logo,
+\begin{equation}
+I_s = \frac{V}{R_1} + \frac{V}{R_2}
+= V\!\left(\frac{1}{R_1} + \frac{1}{R_2}\right)
+\quad\Rightarrow\quad
+V = I_s\,\frac{R_1 R_2}{R_1 + R_2}.
+\end{equation}
+
+Assim, as correntes são dadas pelo \emph{divisor de corrente}:
+\begin{align}
+I_1 &= \frac{V}{R_1} = I_s\,\frac{R_2}{R_1 + R_2},\\[6pt]
+I_2 &= \frac{V}{R_2} = I_s\,\frac{R_1}{R_1 + R_2}.
+\end{align}
+
+\subsubsection{Substituindo os valores}
+Agora, assumindo $R_{s} = \SI{1}{\kilo\ohm}$, $R_{1} = \SI{2.2}{\kilo\ohm}$ e $R_{2} = \SI{5.6}{\kilo\ohm}$:\\[3pt]
+
+\begin{align}
+R_1 \parallel R_2 &= \frac{2200 \times 5600}{2200 + 5600} 
+= \frac{12320000}{7800} \approx \SI{1579,49}{\ohm}, \\[6pt] 
+I_s &= \frac{10}{1000 + 1579,49} 
+= \frac{10}{2579,49} 
+\approx \SI{3,876}{\milli\ampere}.
+\end{align}
+
+\begin{align*}
+I_1 &= \SI{3,876}{\milli\ampere} \cdot \frac{5600}{2200 + 5600} 
+= \SI{3,876}{\milli\ampere} \cdot \frac{5600}{7800} 
+\approx \SI{2,782}{\milli\ampere}, \\[6pt]
+I_2 &= \SI{3,876}{\milli\ampere} \cdot \frac{2200}{7800} 
+= \SI{3,876}{\milli\ampere} \cdot 0,2821 
+\approx \SI{1,094}{\milli\ampere}.
+\end{align*}
+
+\subsection{Divisor de Tensão}
+\subsubsection{Forma genérica}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{divisor_de_tensao.png}
+\caption{Divisor de Tensão}
+\label{fig:divisor_de_tensao}
+\end{figure}
+
+Utilizando o circuito da Figura~\ref{fig:divisor_de_tensao}, iremos determinar $V_1$ e $V_2$ em função de $V_s$, $R_1$ e $R_2$.
+A corrente é dada por:
+\begin{equation}
+I = \frac{V_s}{R_1 + R_2}.
+\end{equation}
+Logo, podemos escrever:
+\begin{align}
+V_1 &= I \cdot R_1 = V_s \cdot \frac{R_1}{R_1 + R_2}, \\[6pt]
+V_2 &= I \cdot R_2 = V_s \cdot \frac{R_2}{R_1 + R_2}.
+\end{align}
+
+\subsubsection{Substituindo os valores}
+Considerando $R_1 = \SI{5.6}{\kilo\ohm}$, $R_2 = \SI{1.2}{\kilo\ohm}$ e $V_s = \SI{5}{\volt}$.
+
+\begin{align*}
+V_1 &= 5 \cdot \frac{5600}{5600 + 1200} 
+= 5 \cdot \frac{5600}{6800} 
+\approx \SI{4,12}{\volt}, \\[6pt]
+V_2 &= 5 \cdot \frac{1200}{5600 + 1200} 
+= 5 \cdot \frac{1200}{6800} 
+\approx \SI{0,88}{\volt}.
+\end{align*}
+
+Considerando $R_1 = \SI{5.6}{\kilo\ohm}$, $R_2 = \SI{5.6}{\kilo\ohm}$ e $V_s = \SI{5}{\volt}$.
+
+\begin{align*}
+V_1 &= 5 \cdot \frac{5600}{5600 + 5600} 
+= 5 \cdot \frac{5600}{11200} 
+= \SI{2,5}{\volt}, \\[6pt]
+V_2 &= 5 \cdot \frac{5600}{5600 + 5600} 
+= 5 \cdot \frac{5600}{11200} 
+= \SI{2,5}{\volt}.
+\end{align*}
+
+Considerando $R_1 = \SI{8.2}{\mega\ohm}$, $R_2 = \SI{8.2}{\mega\ohm}$ e $V_s = \SI{5}{\volt}$.
+
+\begin{align*}
+V_1 &= 5 \cdot \frac{8200000}{8200000 + 8200000} 
+= 5 \cdot \frac{8200000}{16400000} 
+= \SI{2,5}{\volt}, \\[6pt]
+V_2 &= 5 \cdot \frac{8200000}{8200000 + 8200000} 
+= 5 \cdot \frac{8200000}{16400000} 
+= \SI{2,5}{\volt}.
+\end{align*}
+
+\subsection{Ponte de Wheatstone}
+\subsubsection{Forma genérica}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{ponte_de_whetstone.png}
+\caption{Ponte de Wheatstone}
+\label{fig:ponte_de_wheatstone}
+\end{figure}
+
+Considere o circuito da Ponte de Wheatstone, representado na Figura~\ref{fig:ponte_de_wheatstone}. Iremos escrever a tensão $V_d$ em função de $V_s$, $R_1$ e $R_2$.
+\\
+O ponto central da esquerda tem tensão:
+\[
+V_{1\text{ esq}} = V_s \cdot \frac{R_1}{R_1 + R_{2\text{ esq}}}
+\]
+e, o ponto central da direita:
+\[
+V_{1\text{ dir}} = V_s \cdot \frac{R_1}{R_1 + R_{2\text{ dir}}}
+\]
+A tensão diferencial $V_d$ é
+\[
+V_d = V_{1\text{ esq}} - V_{1\text{ dir}}.
+\]
+
+\subsubsection{Substituindo os valores}
+\subsubsection*{Caso 1: $R_1 = \SI{5.6}{\kilo\ohm}$, $R_{2\text{ esq}} = R_{2\text{dir}} = \SI{1.2}{\kilo\ohm}$}
+\begin{align*}
+V_{1\text{ esq}} &= 5 \cdot \frac{5600}{5600+1200} 
+= 5 \cdot \frac{5600}{6800} 
+\approx \SI{4,12}{\volt}, \\[6pt]
+V_{1\text{dir}} &= V_{1\text{ esq}} \approx \SI{4,12}{\volt}, \\[6pt]
+V_d &= 4,12 - 4,12 = \SI{0}{\volt}.
+\end{align*}
+
+\subsubsection*{Caso 2: $R_1 = \SI{5.6}{\kilo\ohm}$, $R_{2\text{ esq}} = \SI{1.2}{\kilo\ohm}$, $R_{2\text{ dir}} = \SI{1.0}{\kilo\ohm}$}
+\begin{align*}
+V_{1\text{ esq}} &= 5 \cdot \frac{5600}{5600+1200} 
+= 5 \cdot \frac{5600}{6800} 
+\approx \SI{4,12}{\volt}, \\[6pt]
+V_{1\text{dir}} &= 5 \cdot \frac{5600}{5600+1000} 
+= 5 \cdot \frac{5600}{6600} 
+\approx \SI{4,24}{\volt}, \\[6pt]
+V_d &= 4,12 - 4,24 \approx \SI{-0,12}{\volt}.
+\end{align*}
+
+%======================================================================
+% SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
+%======================================================================
+\section{Procedimentos Experimentais}
+
+%======================================================================
+% SEÇÃO 5: SIMULAÇÃO E RESULTADOS
+%======================================================================
+\section{Simulação e Resultados}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_div_corrente.png}
+\caption{Divisor de corrente}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Valores de corrente}
+\label{tab:correntes_div}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (\si{\milli\ampere})} & \textbf{Simulado (\si{\milli\ampere})} & \textbf{Medido (\si{\milli\ampere})} & \textbf{E (\%)} \\
+\hline
+$I_s$ & 3,876 & 3,877 & 3,93 & 1,4 \\ \hline
+$I_1$ & 2,782 & 2,783 & 2,82 & 1,4 \\ \hline
+$I_2$ & 1,094 & 1,093 & 1,10 & 0,5 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_div_tensao1.png}
+\caption{Divisor de tensão $R_1 = \SI{5,6}{\kilo\ohm}$ e $R_2 = \SI{1,2}{\kilo\ohm}$}
+\label{fig:sim_div_tensao1}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Valores de tensão ($R_1 = \SI{5,6}{\kilo\ohm}$ e $R_2 = \SI{1,2}{\kilo\ohm}$)}
+\label{tab:tensoes_div1}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
+\hline
+$V_1$ & 4,117 & 4,118 & 4,12 & 0,05 \\ \hline
+$V_2$ & 0,882 & 0,882 & 0,87 & 1,36 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_div_tensao1.png}
+\caption{Divisor de tensão $R_1 = R_2 = \SI{5,6}{\kilo\ohm}$}
+\label{fig:sim_div_tensao1}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Valores de tensão ($R_1 = R_2 = \SI{5,6}{\kilo\ohm}$)}
+\label{tab:tensoes_div2}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
+\hline
+$V_1$ & 2,5 & 2,5 & 2,52 &      \\ \hline
+$V_2$ & 2,5 & 2,5 & 2,47 &      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_div_tensao1.png}
+\caption{Divisor de tensão $R_1 = R_2 = \SI{8,2}{\mega\ohm}$}
+\label{fig:sim_div_tensao1}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Valores de tensão ($R_1 = R_2 = \SI{8,2}{\mega\ohm}$)}
+\label{tab:tensoes_div3}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
+\hline
+$V_1$ & 2,5 & 2,5 & 1,76 &      \\ \hline
+$V_2$ & 2,5 & 2,5 & 1,77 &      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_ponte1.png}
+\caption{Ponte de Wheatstone $V_{d1}$ para $R_2=\SI{1,2}{\kilo\ohm}$ e $V_{d2}$ para $R_2=\SI{1,2}{\kilo\ohm}$}
+\label{fig:sim_ponte1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{sim_ponte2.png}
+\caption{Ponte de Wheatstone $V_{d1}$ para $R_2=\SI{1,2}{\kilo\ohm}$ e $V_{d2}$ para $R_2=\SI{1}{\kilo\ohm}$}
+\label{fig:sim_ponte2}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Valores de tensão da ponte ($V_{d1}$ para $R_2=\SI{1,2}{\kilo\ohm}$ e $V_{d2}$ para $R_2=\SI{1}{\kilo\ohm}$)}
+\label{tab:tensoes_ponte} 
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Calculado (\si{\volt})} & \textbf{Simulado (\si{\volt})} & \textbf{Medido (\si{\volt})} & \textbf{E (\%)} \\
+\hline
+$V_{d1}$ & 0 & 0 & 0,015 &      \\ \hline
+$V_{d2}$ & -0,12 & 0,12 & 0,118 &      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Valores de resistência}
+\label{tab:resistencias}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Componente} & \textbf{Nominal (\si{\kilo\ohm})} & \textbf{Medido (\si{\kilo\ohm})} & \textbf{E (\%)} \\
+\hline
+$R_0$ & 1,0 & 0,983 & 1,7 \\ \hline
+$R_1$ & 1,2 & 1,192 & 0,7 \\ \hline
+$R_2$ & 1,2 & 1,191 & 0,7 \\ \hline
+$R_3$ & 2,2 & 2,15 & 2,3 \\ \hline
+$R_4$ & 5,6 & 5,51 & 1,6 \\ \hline
+$R_5$ & 5,6 & 5,62 & 0,4 \\ \hline
+$R_6$ & 8200 & 8280 & 1,0 \\ \hline
+$R_7$ & 8200 & 8260 & 0,7 \\ \hline
+\end{tabular}
+\end{table}
+
+%======================================================================
+% SEÇÃO 6: QUESTÕES PARA O RELATÓRIO
+%======================================================================
+\section{Questões para o Relatório}
+As propriedades de divisão de corrente poderiam ser aplicadas para as correntes $I_{1}$ e $I_{2}$ no
+circuito mostrado na Figura \ref{fig:questao_para_relatorio}? Explique.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{questao_para_relatorio.png}
+\caption{Questões para o Relatório}
+\label{fig:questao_para_relatorio}
+\end{figure}
+
+De forma a obtermos $I_1$ e $I_2$ diretamente, não é possível, pois temos também a configuração dos resistores $R_3$, $R_4$ e $R_5$. Porém, consguimos utilizar resistência equivalente para encontrarmos um circuito com apenas dois resistores em paralelo ($R_1*$ = $(R_1+(R_3||(R_4+R_5)$ e $R_2*$ = $R_2$), onde obteremos $I_2$, e, após isso, encontrarmos $I_1$. 
+
+%======================================================================
+% SEÇÃO 7: CONCLUSÃO
+%======================================================================
+\section{Conclusão}
+
+
+%======================================================================
+% SEÇÃO 8: REFERÊNCIAS
+%======================================================================
+\begin{thebibliography}{9}
+
+\bibitem{nilsson}
+NILSSON, James W.; RIEDEL, Susan A. \textit{Circuitos Elétricos}. 10. ed.
+
+\end{thebibliography}
+
+\end{document}
+
+
+
