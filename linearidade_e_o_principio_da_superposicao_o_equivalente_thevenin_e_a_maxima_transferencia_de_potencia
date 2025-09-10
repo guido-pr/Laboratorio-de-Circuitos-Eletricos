@@ -13,6 +13,7 @@
 output-decimal-marker = {,}, % Usa vírgula como separador decimal
 per-mode = symbol
 }
+\usepackage{circuitikz}
 \title{Capítulo 5 - Linearidade e o Princípio da Superposição, o Equivalente Thévenin e a Máxima Transferência de Potência}
 \author{Gabriel Franklin Lopes de Oliveira \\
 Guido Piancastelli Ramos \\
@@ -29,15 +30,262 @@ Matheus Muniz Soares
 %======================================================================
 \section{Introdução}
 
+\paragraph{}
+O estudo da análise de circuitos elétricos envolve a aplicação de diferentes métodos e teoremas que permitem simplificar redes complexas e compreender seu comportamento de forma mais prática. Entre os conceitos fundamentais estão o \textbf{Princípio da Superposição}, os \textbf{Teoremas de Thévenin e Norton} e a condição de \textbf{Máxima Transferência de Potência}, os quais constituem a base desta prática experimental.
+
+\subsection*{Parte A – Princípio da Superposição}
+
+\paragraph{}
+O Princípio da Superposição estabelece que, em circuitos lineares com múltiplas fontes independentes, a resposta total (tensão ou corrente em um elemento) pode ser obtida pela soma algébrica das respostas individuais produzidas por cada fonte atuando isoladamente, enquanto as demais são desativadas. Essa propriedade é fundamental porque permite analisar circuitos complexos de forma sistemática, considerando o efeito de cada fonte separadamente.
+
+\subsection*{Parte B – Teoremas de Thévenin e Norton}
+
+\paragraph{}
+Os Teoremas de Thévenin e Norton oferecem métodos equivalentes de simplificação de circuitos. O Teorema de Thévenin afirma que qualquer circuito linear pode ser substituído por uma fonte de tensão em série com uma resistência equivalente, denominada resistência de Thévenin. Já o Teorema de Norton garante que o mesmo circuito pode ser representado por uma fonte de corrente em paralelo com essa mesma resistência equivalente. Essas transformações tornam a análise mais simples, especialmente quando se deseja avaliar o comportamento do circuito em função de diferentes cargas conectadas aos seus terminais.
+\\\\\\
+\subsection*{Parte C – Máxima Transferência de Potência}
+\paragraph{}
+A condição de Máxima Transferência de Potência é uma aplicação direta do Teorema de Thévenin. Esse princípio mostra que a potência entregue a uma carga é máxima quando a resistência da carga é igual à resistência de Thévenin do circuito equivalente visto pelos terminais. Tal conceito possui grande importância prática, pois garante o melhor aproveitamento da energia fornecida pela fonte ao circuito de carga, sendo aplicado em áreas como eletrônica e telecomunicações.
+
 %======================================================================
 % SEÇÃO 2: OBJETIVOS
 %======================================================================
 \section{Objetivos}
 
+\begin{itemize} 
+\item \textbf{Geral:} Investigar e verificar experimentalmente teoremas fundamentais da análise de circuitos em corrente contínua, como o Princípio da Superposição, o Teorema de Thévenin e o Teorema de Máxima Transferência de Potência. 
+\item \textbf{Específicos:} 
+\begin{itemize} 
+\item Determinar teoricamente as correntes e as quedas de tensão nos componentes do circuito utilizando o Princípio da Superposição, o Teorema de Thévenin e o Teorema de Máxima Transferência de Potência. 
+\item Realizar a montagem prática do circuito em protoboard. 
+\item Medir experimentalmente as tensões e correntes no circuito utilizando um multímetro, para verificar a linearidade dos componentes e os teoremas estudados. 
+\item Comparar os resultados obtidos através dos cálculos teóricos, da simulação computacional (LTspice) e das medições experimentais, analisando as possíveis fontes de erro e a validade dos teoremas. 
+\end{itemize} 
+\end{itemize}
+
 %======================================================================
 % SEÇÃO 3: CÁLCULOS TEÓRICOS
 %======================================================================
 \section{Cálculos teóricos}
+\section*{Parte A - Linearidade e Princípio da Superposição}
+
+O objetivo desta seção é determinar a tensão de saída $V_{\text{out}}$ em um circuito que possui duas fontes de tensão independentes. Para isso, utilizaremos o Princípio da Superposição, que nos permite calcular o efeito de cada fonte individualmente e depois somar os resultados. Os circuitos dos passos 1 e 2 representam exatamente essas etapas intermediárias.
+
+%----------------------------------------------------------------------
+\subsection{Passo 1: Efeito da Fonte $V_{\text{in}}$}
+%----------------------------------------------------------------------
+
+Nesta etapa, calculamos a contribuição da fonte $V_{\text{in}}$ para a tensão de saída. Para isso, a fonte de $5\,\text{V}$ é desativada (substituída por um curto-circuito), resultando no circuito da figura a seguir:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{principio_de_linearidade.png}
+\caption{Parte 1}
+\label{fig:principio_de_linearidade}
+\end{figure}
+
+A tensão de saída devida apenas a $V_{\text{in}}$ será chamada de $V_{\text{out1}}$.
+
+\paragraph{Análise do Circuito:}
+Os resistores de $1 \, \text{k}\Omega$ e $3.3 \, \text{k}\Omega$ ficam em paralelo. Sua resistência equivalente ($R_{p1}$) é:
+$$ R_{p1} = \frac{1 \times 3.3}{1 + 3.3} \, \text{k}\Omega \approx 0.7674 \, \text{k}\Omega $$
+A tensão $V_{\text{out1}}$ é a tensão sobre $R_{p1}$, que está em série com o resistor de $2.2 \, \text{k}\Omega$. Usando o divisor de tensão:
+$$ V_{\text{out1}} = V_{\text{in}} \cdot \frac{R_{p1}}{R_{2.2\text{k}} + R_{p1}} = V_{\text{in}} \cdot \frac{0.7674}{2.2 + 0.7674} \approx 0.2586 \cdot V_{\text{in}} $$
+
+%----------------------------------------------------------------------
+\subsection{Passo 2: Efeito da Fonte de 5V}
+%----------------------------------------------------------------------
+
+Agora, calculamos a contribuição da fonte de $5\,\text{V}$. A fonte $V_{\text{in}}$ é desativada (curto-circuitada), resultando no circuito da figura a seguir:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{principio_de_linearidade2.png}
+\caption{Parte 2}
+\label{fig:principio_de_linearidade2}
+\end{figure}
+
+A tensão de saída devida apenas à fonte de $5\,\text{V}$ será chamada de $V_{\text{out}}''$.
+
+\paragraph{Análise do Circuito:}
+Nesta configuração, os resistores de $2.2 \, \text{k}\Omega$ e $3.3 \, \text{k}\Omega$ ficam em paralelo. Sua resistência equivalente ($R_{p2}$) é:
+$$ R_{p2} = \frac{2.2 \times 3.3}{2.2 + 3.3} \, \text{k}\Omega = \frac{7.26}{5.5} \, \text{k}\Omega = 1.32 \, \text{k}\Omega $$
+A tensão $V_{\text{out2}}$ é a tensão sobre $R_{p2}$, que está em série com o resistor de $1 \, \text{k}\Omega$. Usando o divisor de tensão com a fonte de $5\,\text{V}$:
+$$ V_{\text{out2}} = 5 \, \text{V} \cdot \frac{R_{p2}}{R_{1\text{k}} + R_{p2}} = 5 \, \text{V} \cdot \frac{1.32}{1 + 1.32} \approx 2.845 \, \text{V} $$
+Note que $V_{\text{out2}}$ é um valor constante, pois não depende de $V_{\text{in}}$.
+
+%----------------------------------------------------------------------
+\subsection{Passo 3: Superposição dos Resultados}
+%----------------------------------------------------------------------
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{principio_de_linearidade3.png}
+\caption{Parte 3}
+\label{fig:principio_de_linearidade3}
+\end{figure}
+
+De acordo com o Princípio da Superposição, a tensão total $V_{\text{out}}$ no circuito da Figura 3 é a soma algébrica das tensões parciais calculadas:
+$$ V_{\text{out3}} = V_{\text{out1}} + V_{\text{out2}} $$
+Substituindo as expressões encontradas:
+$$ V_{\text{out3}} \approx (0.2586 \cdot V_{\text{in}}) + 2.845 \, \text{V} $$
+
+\paragraph{Resultados Finais}
+Utilizando a equação final, podemos preencher a tabela com os valores totais de $V_{\text{out}}$ para cada valor de $V_{\text{in}}$.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{$V_{\text{in}}$} & \textbf{$V_{\text{out1}}$} (de $V_{\text{in}}$) & \textbf{$V_{\text{out2}}$} (de $5\,\text{V}$) & \textbf{$V_{\text{out3}} = V_{\text{out1}} + V_{\text{out2}}$} \\
+        \hline
+        $2 \, \text{V}$ & $0.517 \, \text{V}$ & $2.845 \, \text{V}$ & $3.362 \, \text{V}$ \\
+        \hline
+        $4 \, \text{V}$ & $1.034 \, \text{V}$ & $2.845 \, \text{V}$ & $3.879 \, \text{V}$ \\
+        \hline
+        $5 \, \text{V}$ & $1.293 \, \text{V}$ & $2.845 \, \text{V}$ & $4.138 \, \text{V}$ \\
+        \hline
+        $8 \, \text{V}$ & $2.069 \, \text{V}$ & $2.845 \, \text{V}$ & $4.914 \, \text{V}$ \\
+        \hline
+        $10 \, \text{V}$ & $2.586 \, \text{V}$ & $2.845 \, \text{V}$ & $5.431 \, \text{V}$ \\
+        \hline
+    \end{tabular}
+    \caption{Aplicação do Princípio da Superposição}
+    \label{tab:resultados_superposicao}
+\end{table}
+
+\section*{Parte B - Teorema de Thévenin}
+% --- PARTE A: ANÁLISE NODAL ---
+\subsection*{Parte 1 - Análise Nodal}
+\subsubsection*{Cálculo da tensão $V_{L}$}
+
+Primeiramente, definimos os nós essenciais do circuito para a análise:
+\begin{itemize}
+    \item Nó de Referência (Terra): O condutor inferior, com potencial definido como 0V.
+    \item Nó B: O ponto de junção entre os resistores $R1$, $R2$ e $R_L$. Sua tensão é denotada por $V_B$.
+    \item Nó C: O ponto de junção entre os resistores $R_L$, $R3$ e $R4$. Sua tensão é denotada por $V_C$.
+\end{itemize}
+A tensão desejada, $V_L$, é a diferença de potencial entre os nós B e C:
+$$ V_L = V_B - V_C $$
+
+A LCK estabelece que a soma algébrica das correntes que saem de qualquer nó é igual a zero.
+
+\subsubsection*{Equação para o Nó B}
+Assumindo que todas as correntes saem do nó B, temos:
+$$ \frac{V_B - 10V}{R1} + \frac{V_B - 0V}{R2} + \frac{V_B - V_C}{R_L} = 0 $$
+Substituindo os valores dos componentes ($R1=300\,\Omega$, $R2=560\,\Omega$, $R_L=1.2\,k\Omega = 1200\,\Omega$):
+$$ \frac{V_B - 10}{300} + \frac{V_B}{560} + \frac{V_B - V_C}{1200} = 0 $$
+Para eliminar os denominadores, multiplicamos a equação por 8400:
+\begin{align*}
+    28(V_B - 10) + 15V_B + 7(V_B - V_C) &= 0 \\
+    28V_B - 280 + 15V_B + 7V_B - 7V_C &= 0 \\
+    50V_B - 7V_C &= 280 \quad \text{(Equação 1)}
+\end{align*}
+
+\subsubsection*{Equação para o Nó C}
+De forma similar, para o nó C, a soma das correntes que saem é zero. Note que os resistores $R4$ e $R5$ estão em série.
+$$ \frac{V_C - V_B}{R_L} + \frac{V_C - 0V}{R3} + \frac{V_C - 0V}{R4 + R5} = 0 $$
+Substituindo os valores ($R_L=1200\,\Omega$, $R3=560\,\Omega$, $R4=300\,\Omega$, $R5=820\,\Omega$):
+$$ \frac{V_C - V_B}{1200} + \frac{V_C}{560} + \frac{V_C}{1120} = 0 $$
+Multiplicamos por 16800:
+\begin{align*}
+    14(V_C - V_B) + 30V_C + 15V_C &= 0 \\
+    14V_C - 14V_B + 30V_C + 15V_C &= 0 \\
+    -14V_B + 59V_C &= 0 \quad \text{(Equação 2)}
+\end{align*}
+
+\subsubsection*{Resolução do Sistema de Equações}
+Temos um sistema de duas equações lineares:
+\begin{align*}
+    50V_B - 7V_C &= 280 \\
+    -14V_B + 59V_C &= 0
+\end{align*}
+A partir da Equação 2, podemos isolar $V_C$ em função de $V_B$:
+$$ 59V_C = 14V_B \implies V_C = \frac{14}{59}V_B $$
+Substituindo esta relação na Equação 1:
+\begin{align*}
+    50V_B - 7 \left( \frac{14}{59}V_B \right) &= 280 \\
+    V_B \left( \frac{2852}{59} \right) &= 280 \\
+    V_B &= 280 \times \frac{59}{2852} \approx 5.792 \, \text{V}
+\end{align*}
+Agora, calculamos $V_C$ usando o valor de $V_B$:
+$$ V_C = \frac{14}{59} \times 5.792 \approx 1.374 \, \text{V} $$
+
+\subsubsection*{Cálculo Final da Tensão $V_L$}
+Finalmente, calculamos $V_L$ como a diferença entre $V_B$ e $V_C$:
+$$ V_L = V_B - V_C = 5.792 \, \text{V} - 1.374 \, \text{V} \approx 4.418 \, \text{V} $$
+
+% --- PARTE B: TEOREMA DE THÉVENIN ---
+\subsection*{Parte 2 - Teorema de Thévenin}
+\subsubsection*{Tensão de Thévenin ($V_{th}$)}
+A Tensão de Thévenin é a tensão de circuito aberto entre os terminais do resistor $R_L$.
+\begin{enumerate}
+    \item Cálculo da Tensão no Nó B (circuito aberto): Utiliza-se o divisor de tensão com $R1$ e $R2$.
+    \begin{align*}
+        V_{B_{\text{aberto}}} = 10 \, \text{V} \times \frac{560 \, \Omega}{300 \, \Omega + 560 \, \Omega} \approx 6.51 \, \text{V}
+    \end{align*}
+
+    \item Cálculo da Tensão no Nó C (circuito aberto): Como não há corrente no lado direito, a tensão é nula.
+    $$ V_{C_{\text{aberto}}} = 0 \, \text{V} $$
+    
+    \item Tensão de Thévenin final: É a diferença entre as tensões dos nós B e C.
+    $$ V_{th} = V_{B_{\text{aberto}}} - V_{C_{\text{aberto}}} = 6.51 \, \text{V} - 0 \, \text{V} = 6.51 \, \text{V} $$
+\end{enumerate}
+Resultado: A tensão de Thévenin é $V_{th} \approx 6.51 \, \text{V}$.
+
+\subsubsection*{Resistência de Thévenin ($R_{th}$)}
+A Resistência de Thévenin é a resistência equivalente vista dos terminais de $R_L$ com a fonte desativada.
+\begin{enumerate}
+    \item Resistência Equivalente à Esquerda (vista do nó B): Corresponde ao paralelo entre $R1$ e $R2$.
+    \begin{align*}
+        R_{\text{eq, B}} = \frac{300 \, \Omega \times 560 \, \Omega}{300 \, \Omega + 560 \, \Omega} \approx 195.35 \, \Omega
+    \end{align*}
+
+    \item Resistência Equivalente à Direita (vista do nó C): Corresponde ao paralelo de $R3$ com a série de $R4$ e $R5$.
+    \begin{align*}
+        R_{\text{eq, C}} = \frac{560 \, \Omega \times (1120 \, \Omega)}{560 \, \Omega + 1120 \, \Omega} \approx 373.33 \, \Omega
+    \end{align*}
+    
+    \item Resistência de Thévenin Total: É a soma das duas resistências equivalentes.
+    $$ R_{th} = R_{\text{eq, B}} + R_{\text{eq, C}} = 195.35 \, \Omega + 373.33 \, \Omega = 568.68 \, \Omega $$
+\end{enumerate}
+
+\subsection*{Parte 3. Diagrama do Circuito Equivalente e Cálculo Final de $V_L$}
+
+Com a tensão ($V_{th}$) e a resistência ($R_{th}$) de Thévenin calculadas, podemos montar o circuito equivalente e determinar a queda de tensão sobre o resistor $R_L$.
+
+\subsubsection*{Diagrama do Circuito Equivalente de Thévenin}
+O circuito complexo original, do ponto de vista do resistor $R_L$, pode ser simplificado para uma única fonte de tensão ($V_{th}$) em série com um único resistor ($R_{th}$), conectados à carga $R_L$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuitoTVH_eq.jpg}
+\caption{Circuito 6 - Equivalente de Thevenin}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\subsubsection*{Cálculo da Queda de Tensão sobre $R_L$}
+Neste circuito série simplificado, a tensão $V_L$ sobre o resistor de carga $R_L$ pode ser facilmente calculada utilizando a regra do divisor de tensão.
+
+\begin{align*}
+    V_L &= V_{th} \times \frac{R_L}{R_{th} + R_L} \\
+    % Substituindo os valores encontrados
+    &= 6.51 \, \text{V} \times \frac{1200 \, \Omega}{568.68 \, \Omega + 1200 \, \Omega} \\
+    &= 6.51 \times \frac{1200}{1768.68} \\
+    &= 6.51 \times 0.67845 \approx 4.417 \, \text{V}
+\end{align*}
+
+\subsubsection*{Comparação com o Resultado do Item 1}
+Agora, comparamos o resultado obtido com o Teorema de Thévenin com o resultado da Análise Nodal (parte 1).
+
+\begin{itemize}
+    \item \textbf{Resultado da Análise Nodal (Parte 1):} $V_L \approx 4.118 \, \text{V}$
+    \item \textbf{Resultado do Teorema de Thévenin (Parte 3):} $V_L \approx 4.117 \, \text{V}$
+\end{itemize}
+
+Os resultados são praticamente idênticos (a pequena diferença de 0.001V se deve apenas ao arredondamento nos passos intermediários). Isso confirma que ambas as análises estão corretas e que os métodos são equivalentes para a solução do problema.
+
+
 
 %======================================================================
 % SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
@@ -48,6 +296,129 @@ Matheus Muniz Soares
 % SEÇÃO 5: SIMULAÇÃO E RESULTADOS
 %======================================================================
 \section{Simulação e Resultados}
+
+\subsection*{Parte A - Linearidade e o Princípio da Superposição}
+
+% ---------------- Tabela 5.1 ----------------
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuito_tabela1.jpg}
+\caption{CIrcuito 1 - Fonte Variável}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{V\textsubscript{out1}}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{V\textsubscript{in}(V)} & \textbf{Calculado (V)} & \textbf{Simulado (V)} & \textbf{Medido (V)} & \textbf{E (\%)} \\ \hline
+2  & 0,517 & 0,517  &  &  \\ \hline
+4  & 1,034 & 1,034 &  &  \\ \hline
+5  & 1,293 & 1,293 &  &  \\ \hline
+8  & 2,069 & 2,069 &  &  \\ \hline
+10 & 2,586 & 2,586 &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+% ---------------- Tabela 5.2 ----------------
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuito_tabela2.jpg}
+\caption{Circuito 2 - Fonte Fixa}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{V\textsubscript{out2}}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Calculado (V)} & \textbf{Simulado (V)} & \textbf{Medido (V)} & \textbf{E (\%)} \\ \hline
+5V & 2,845 & 2,845 &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+% ---------------- Tabela 5.3 ----------------
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuito_tabela3.jpg}
+\caption{Circuito 3 - Superposição}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{V\textsubscript{out3}}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{V\textsubscript{in}(V)} & \textbf{Calculado (V)} & \textbf{Simulado (V)} & \textbf{Medido (V)} & \textbf{E (\%)} \\ \hline
+2  & 3,362 & 3,362 &  &  \\ \hline
+4  & 3,879 & 3,879 &  &  \\ \hline
+5  & 4,138 & 4,138 &  &  \\ \hline
+8  & 4,914 & 4,914 &  &  \\ \hline
+10 & 5,431 & 5,431 &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection*{Parte B - Teorema de Thévenin}
+
+% ---------------- Tabela 5.5 ----------------
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuitoTVH.jpg}
+\caption{Circuito 4}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuitoTVH_analise.jpg}
+\caption{Circuito 5 - Análise de Thevenin}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{circuitoTVH_eq.jpg}
+\caption{Circuito 6 - Equivalente de Thevenin}
+\label{fig:sim_div_corrente}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Teorema de Thévenin}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & \textbf{Calculado} & \textbf{Simulado} & \textbf{Medido} & \textbf{E (\%)} \\ \hline
+$V_{L}$ (V)   &  & 4,418 &  &  \\ \hline
+$V_{TH}$ (V)  &  & 6,512 &  &  \\ \hline
+$R_{TH}$ ($\Omega$) &  & 568,682 &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection*{Parte C – Máxima Transferência de Potência}
+
+% ---------------- Tabela 5.6 ----------------
+\begin{table}[H]
+\centering
+\caption{Potência dissipada em $R_{L}$}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{$R_{L}$ ($\Omega$)} & \textbf{Potência (mW) - SIM} & \textbf{Potência (mW) - Medida} \\ \hline
+ &  & \\ \hline
+ &  & \\ \hline
+ &  & \\ \hline
+568,682 & 18,642 & \\ \hline
+1.000 & 17,233 & \\ \hline
+2.200 & 12,170 & \\ \hline
+5.600 & 6,241 & \\ \hline
+\end{tabular}
+\end{table}
 
 %======================================================================
 % SEÇÃO 6: QUESTÕES PARA O RELATÓRIO
