@@ -1,0 +1,414 @@
+\documentclass[a4paper, 12pt]{article}
+
+% --- PACOTES ---
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{amsmath}         % Pacote para ambientes matemáticos
+\usepackage{float}           % Para melhor controle de posicionamento [H]
+\usepackage{siunitx}         % Para formatar unidades (ex: 5 V, 1 kOhm)
+\usepackage{pgfplots}        % Para criar gráficos
+\usepackage{circuitikz}      % Para desenhar circuitos
+
+% --- CONFIGURAÇÕES ---
+\sisetup{
+    output-decimal-marker = {,}, % Usa vírgula como separador decimal
+    per-mode = symbol
+}
+\pgfplotsset{compat=1.18}
+
+
+
+\title{Capítulo 6 - Circuitos com Amplificadores Operacionais - Parte I}
+\author{Gabriel Franklin Lopes de Oliveira \\
+Guido Piancastelli Ramos \\
+Matheus Muniz Soares
+}
+\date{1º de outubro de 2025}
+
+\begin{document}
+
+\maketitle
+
+%======================================================================
+% SEÇÃO 1: INTRODUÇÃO
+%======================================================================
+\section{Introdução}
+
+\subsection{O Amplificador Operacional (AmpOp)}
+
+O Amplificador Operacional (AmpOp) é um amplificador diferencial de alta performance que serve como bloco de construção fundamental em inúmeros circuitos eletrônicos. Seu comportamento é definido pelas tensões aplicadas em seus dois terminais de entrada: a entrada não inversora ($V^+$) e a entrada inversora ($V^-$).
+
+As limitações físicas dos componentes semicondutores que o constituem impõem restrições de tensão e corrente, resultando em uma função de transferência com três regiões de operação distintas: a região linear, a saturação positiva ($+V_{sat}$) e a saturação negativa ($-V_{sat}$). Na região linear, a tensão de saída ($V_{out}$) é proporcional à diferença de potencial entre as entradas, dada por:
+$$ V_{out} = A_{vo} \cdot (V^+ - V^-) $$
+Onde $A_{vo}$ representa o ganho de tensão de malha aberta do amplificador.
+
+\subsection{Configuração em Malha Aberta}
+
+Quando um AmpOp é utilizado em sua configuração de malha aberta, ou seja, sem qualquer tipo de realimentação entre a saída e a entrada, seu ganho de tensão ($A_{vo}$) atinge valores extremamente elevados, tipicamente na ordem de $10^5$ a $10^7$.
+
+Devido a esse ganho massivo, mesmo uma diferença de potencial mínima entre os terminais $V^+$ e $V^-$ é suficiente para levar a tensão de saída aos seus limites de saturação. A região de operação linear torna-se, portanto, muito estreita e de difícil utilização para fins de amplificação de sinais. Por essa razão, a configuração em malha aberta não é adequada para amplificação linear, mas revela-se ideal para aplicações que exigem uma resposta binária, como a comparação de tensões.
+
+\subsection{AmpOp como Comparador de Tensões}
+
+A aplicação mais comum do AmpOp em malha aberta é como um comparador de tensões. Nessa configuração, o dispositivo compara as tensões aplicadas às suas entradas e indica qual delas possui maior magnitude, fornecendo uma resposta digital na saída.
+
+O princípio de funcionamento é direto e baseia-se na tendência do AmpOp à saturação:
+\begin{itemize}
+    \item Se a tensão na entrada não inversora for maior que na entrada inversora ($V^+ > V^-$), a saída será levada ao seu nível máximo, atingindo a saturação positiva ($V_{out} \to +V_{sat}$).
+    \item Por outro lado, se a tensão na entrada inversora for maior que na entrada não inversora ($V^- > V^+$), a saída será conduzida ao seu nível mínimo, atingindo a saturação negativa ($V_{out} \to -V_{sat}$).
+\end{itemize}
+
+Essa resposta binária é extremamente útil em sistemas de decisão eletrônica, conversores analógico-digitais (ADCs) e diversos circuitos de controle, onde uma decisão de "ligado/desligado" ou "alto/baixo" precisa ser tomada com base em níveis de tensão. A simplicidade e a alta sensibilidade do AmpOp tornam o comparador uma ferramenta fundamental na eletrônica moderna.
+
+%======================================================================
+% SEÇÃO 2: OBJETIVOS
+%======================================================================
+\section{Objetivos}
+
+\begin{itemize}
+    \item \textbf{Geral:} Obter uma compreensão geral do amplificador operacional em malha aberta, por meio do estudo de suas características fundamentais. Além disso, busca-se realizar uma análise experimental de seu funcionamento como comparador de tensão, de modo a relacionar a teoria, a simulação e os resultados práticos observados.
+
+    \item \textbf{Específicos:}
+    \begin{itemize}
+        \item Realizar os cálculos teóricos para o projeto do circuito, dimensionando o divisor de tensão para a tensão de referência ($V_{ref}$) e o resistor limitador de corrente para o LED.
+        \item Montar o circuito do comparador de tensão em protoboard, utilizando o amplificador operacional e os componentes previamente calculados.
+        \item Aferir o ponto de comutação do comparador em regime de corrente contínua (CC), medindo a tensão de entrada ($V_{IN}$) exata que aciona a saída.
+        \item Analisar o comportamento dinâmico do circuito em regime de corrente alternada (AC), utilizando um gerador de sinais e um osciloscópio para visualizar as formas de onda de entrada e saída.
+        \item Comparar os resultados obtidos na prática com os valores teóricos e com os dados da simulação computacional, a fim de validar o funcionamento do circuito.
+    \end{itemize}
+\end{itemize}
+
+%======================================================================
+% SEÇÃO 3: CÁLCULOS TEÓRICOS
+%======================================================================
+\section{Cálculos Teóricos}
+
+\subsection{Parte B - O amplificador operacional como um comparador de tensão}
+
+\subsubsection{Cálculo do Resistor Limitador para o LED}
+
+\paragraph{Objetivo:}
+O objetivo é calcular o valor de um resistor $R$ necessário para limitar a corrente de um LED em um circuito em série, garantindo que ele opere nas especificações fornecidas.
+
+\paragraph{Circuito Elétrico:}
+A Figura \ref{fig:circuito_led} mostra o diagrama do circuito analisado.
+\begin{figure}[H]
+    \centering
+    % Substitua 'AmpComparador.png' pelo nome do arquivo da sua imagem
+    \includegraphics[width=0.4\textwidth]{AmpComparador.png}
+    \caption{Diagrama do circuito para acendimento do LED.}
+    \label{fig:circuito_led}
+\end{figure}
+
+\paragraph{Dados do Problema:}
+Os valores fornecidos são:
+\begin{itemize}
+    \item Tensão da fonte ($V_S$): \SI{15}{V}
+    \item Tensão de operação do LED ($V_L$): \SI{1.7}{V}
+    \item Corrente de operação ($I$): \SI{5}{mA} = \SI{0.005}{A}
+\end{itemize}
+
+\paragraph{Cálculo do Resistor:}
+Utilizando a Lei das Malhas de Kirchhoff, a tensão da fonte é igual à soma das quedas de tensão no resistor ($V_R$) e no LED ($V_L$).
+\begin{equation}
+    V_S = V_R + V_L
+\end{equation}
+A tensão sobre o resistor é, portanto, $V_R = V_S - V_L$. Pela Lei de Ohm ($V_R = R \cdot I$), podemos isolar o valor de $R$:
+\begin{equation}
+    R = \frac{V_S - V_L}{I}
+\end{equation}
+Substituindo os valores numéricos:
+\begin{align*}
+    R &= \frac{\SI{15}{V} - \SI{1.7}{V}}{\SI{0.005}{A}} \\
+    R &= \frac{\SI{13.3}{V}}{\SI{0.005}{A}} \\
+    R &= \SI{2660}{\Omega}
+\end{align*}
+O valor do resistor é, portanto, \textbf{\SI{2660}{\Omega}}, ou \textbf{\SI{2.66}{k\Omega}}.
+
+\subsubsection{Projeto do Divisor de Tensão}
+
+\paragraph{Objetivo do Projeto:}
+O objetivo é projetar um divisor de tensão com resistores $R_1$ e $R_2$ para gerar uma tensão de referência $V_{ref}$ de \SI{1}{V} a partir de uma fonte $V_{CC} = \SI{15}{V}$, com a restrição de que a corrente não deve ser maior do que \SI{10}{mA}.
+
+\paragraph{Passo 1: Calcular a Resistência Total ($R_{total}$):}
+A corrente $I$ no circuito é limitada a um máximo de \SI{10}{mA}. Usamos este valor para calcular a resistência total mínima necessária. Pela Lei de Ohm:
+\begin{equation}
+    R_{total} = R_1 + R_2 = \frac{V_{CC}}{I_{max}}
+\end{equation}
+Substituindo os valores ($V_{CC} = \SI{15}{V}$ e $I_{max} = \SI{10}{mA} = \SI{0.01}{A}$):
+\[
+    R_{total} = \frac{\SI{15}{V}}{\SI{0.01}{A}} = \SI{1500}{\Omega}
+\]
+
+\paragraph{Passo 2: Calcular o Resistor $R_2$:}
+A fórmula do divisor de tensão para a tensão de saída $V_{ref}$ é:
+\begin{equation}
+    V_{ref} = V_{CC} \cdot \left( \frac{R_2}{R_{total}} \right)
+\end{equation}
+Isolando $R_2$:
+\begin{equation}
+    R_2 = R_{total} \cdot \left( \frac{V_{ref}}{V_{CC}} \right)
+\end{equation}
+Substituindo os valores ($R_{total} = \SI{1500}{\Omega}$, $V_{ref} = \SI{1}{V}$ e $V_{CC} = \SI{15}{V}$):
+\[
+    R_2 = \SI{1500}{\Omega} \cdot \left( \frac{\SI{1}{V}}{\SI{15}{V}} \right) = \SI{100}{\Omega}
+\]
+
+\paragraph{Passo 3: Calcular o Resistor $R_1$:}
+Com $R_{total}$ e $R_2$ conhecidos, $R_1$ é encontrado por subtração:
+\begin{equation}
+    R_1 = R_{total} - R_2
+\end{equation}
+\[
+    R_1 = \SI{1500}{\Omega} - \SI{100}{\Omega} = \SI{1400}{\Omega}
+\]
+
+\paragraph{Resultado Final do Projeto:}
+Os valores dos resistores que atendem às especificações do projeto são:
+\begin{itemize}
+    \item \textbf{$R_1 = \SI{1400}{\Omega}$} (ou $\SI{1.4}{k\Omega}$)
+    \item \textbf{$R_2 = \SI{100}{\Omega}$}
+\end{itemize}
+
+
+%======================================================================
+%======================================================================
+% SEÇÃO 4: PROCEDIMENTOS EXPERIMENTAIS
+%======================================================================
+\section{Procedimentos Experimentais}
+
+\paragraph{}
+Para a realização da parte prática foram utilizados os seguintes materiais: fonte de tensão contínua, multímetro, potenciômetros, capacitor, LED e um amplificador operacional LM741 ou TL071.
+
+\subsection*{Parte A – O Amplificador Operacional como Comparador}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figParteA1.png} % <-- troque pelo nome da imagem no Overleaf
+    \caption{Circuito do amplificador operacional como comparador de tensão.}
+    \label{fig:comparador}
+\end{figure}
+\paragraph{}
+Nesta etapa foi montado um circuito com a finalidade de utilizar o amplificador operacional como comparador de tensão, permitindo a análise de seu comportamento por meio de um LED como indicador visual. 
+
+\begin{enumerate}
+    \item Inicialmente, montou-se o circuito da 2, utilizando o LED, o resistor calculado e uma fonte de tensão contínua de $V_S = \SI{15}{\volt}$. O funcionamento do circuito foi verificado.
+    \item Em seguida, modificou-se o circuito de modo que a saída do amplificador operacional acionasse o LED. Para isso, foi implementado um divisor resistivo, responsável por gerar a tensão de referência $V_{REF} = \SI{1}{\volt}$ na entrada inversora do AmpOp.
+    \item A tensão de entrada $V_{IN}$ foi fornecida por uma das fontes variáveis. Elevando gradualmente seu valor a partir de $0\,\text{V}$, registrou-se o menor valor de $V_{IN}$ capaz de acionar o LED.
+
+\end{enumerate}
+
+\subsection*{Parte B – Funcionamento em Regime AC}
+\paragraph{}
+Na segunda etapa, a fonte de tensão contínua foi substituída por um gerador de sinais. O objetivo foi analisar o comportamento do circuito comparador sob diferentes amplitudes de sinais senoidais de baixa frequência.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{FigParteB3.png} % <-- troque pelo nome da imagem no Overleaf
+    \caption{Circuito para análise do comparador de tensão.}
+    \label{fig:comparador}
+\end{figure}
+
+
+\begin{enumerate}
+    \item Aplicou-se inicialmente um sinal senoidal de $10\,\text{Hz}$ e $0,5\,\text{V}_P$. Os sinais de entrada e saída foram medidos com o auxílio de um osciloscópio, registrando as formas de onda obtidas.
+    \item O procedimento foi repetido para uma tensão de entrada de $1\,\text{V}_P$, registrando novamente as formas de onda correspondentes.
+    \item Por fim, aumentou-se a tensão de entrada para $2\,\text{V}_P$ e foram coletados novos registros das formas de onda.
+\end{enumerate}
+
+\paragraph{}
+Os resultados obtidos foram organizados e serão discutidos na seção de \textit{Simulação e Resultados}, permitindo a comparação entre o comportamento teórico, simulado e experimental do amplificador operacional como comparador de tensões.
+
+
+%======================================================================
+% SEÇÃO 5: SIMULAÇÃO E RESULTADOS
+%======================================================================
+\section{Simulação e Resultados}
+
+\subsection*{Simulação}
+\paragraph{}
+Nesta seção são apresentados os resultados obtidos por simulação no software LTspice, considerando a resposta DC (DC Sweep) e a análise transitória com diferentes valores de tensão de entrada $V_{IN}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{circuitoA.jpg} % troque pelo nome do arquivo
+    \caption{Circuito - Parte A}
+    \label{fig:dc_sweep}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graficoA.jpg} % troque pelo nome do arquivo
+    \caption{Gráfico - Parte A}
+    \label{fig:dc_sweep}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{circuitoB.jpg} % troque pelo nome do arquivo
+    \caption{Circuito - Parte B}
+    \label{fig:dc_sweep}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graficoB1V.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 1V$ (simulado).}
+    \label{fig:vin05_sim}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graficoB2V.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 2V$ (simulado).}
+    \label{fig:vin1_sim}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graficoB4V.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 4V$ (simulado).}
+    \label{fig:vin2_sim}
+\end{figure}
+
+\subsection*{Parte Prática}
+
+\paragraph{}
+Nesta etapa foram realizadas as simulações de resposta DC (DC Sweep) e de transitório para diferentes valores de $V_{IN}$. Os gráficos obtidos deverão ser inseridos aqui, permitindo identificar as regiões de saturação positiva, negativa e a região linear. Além disso, serão apresentadas as formas de onda simuladas para $V_{IN} = 0,5\,\text{V}_P$, $1\,\text{V}_P$ e $2\,\text{V}_P$.
+
+\paragraph{}
+A seguir, são apresentados os resultados obtidos experimentalmente com o auxílio do osciloscópio, permitindo a comparação direta com as simulações.
+
+\subsubsection*{Medições com Osciloscópio}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{1vpp.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 0,5V$ (medição experimental).}
+    \label{fig:vin05_exp}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{2vpp.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 1V$ (medição experimental).}
+    \label{fig:vin1_exp}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{4vpp.jpg}
+    \caption{Gráfico de $V_{IN}$, $V_{REF}$ e $V_{OUT}$ para $V_{IN} = 2V$ (medição experimental).}
+    \label{fig:vin2_exp}
+\end{figure}
+
+\subsection{Pergunta do roteiro:} Qual o menor valor de tensão DC que fez o LED acender? Como se comportou o LED durante a medição com o sinal AC?
+\textbf{1,013V}
+
+
+%======================================================================
+% SEÇÃO 6: QUESTÕES PARA O RELATÓRIO
+%======================================================================
+\section{Questões para o Relatório}
+
+\subsection*{Tabelas de Características dos Amplificadores Operacionais}
+
+\paragraph{}
+Para complementar a análise, foram pesquisadas as especificações dos modelos de amplificadores operacionais TL071 e LM741. As informações coletadas serão preenchidas nas tabelas a seguir, em comparação com os valores ideais.
+
+\begin{table}[H]
+\centering
+\caption{Tabela de Especificações do AmpOp TL071}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Características} & \textbf{Valor Típico (TL071)} & \textbf{Valor Ideal} \\ \hline
+Ganho de malha aberta    & 200.000 V/V (ou 200 V/mV)     & $\infty$             \\ \hline
+Corrente de Polarização  & 65 pA                         & 0 A                  \\ \hline
+Impedância de Entrada    & $10^{12} \ \Omega$            & $\infty$             \\ \hline
+Impedância de Saída      & $\approx 100 \ \Omega$        & $0 \ \Omega$         \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Tabela de Especificações do AmpOp LM741}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Características} & \textbf{Valor Típico (LM741)} & \textbf{Valor Ideal} \\ \hline
+Ganho de malha aberta    & 200.000 V/V (ou 200 V/mV)     & $\infty$             \\ \hline
+Corrente de Polarização  & 80 nA                         & 0 A                  \\ \hline
+Impedância de Entrada    & 2 M$\Omega$                   & $\infty$             \\ \hline
+Impedância de Saída      & 75 $\Omega$                   & $0 \ \Omega$         \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection*{2. Proponha um procedimento para melhor caracterizar a curva de transferência DC
+entre as regiões de saturação positiva e negativa (região linear).}
+A seguir, propõe-se um procedimento conceitual para a caracterização da curva de transferência DC de um amplificador operacional, com ênfase na transição entre as regiões de saturação e a região linear.
+
+\subsubsection*{1. Estabelecimento de um Ganho Finito e Controlado}
+
+Para que a região linear seja adequadamente observável e caracterizável, o amplificador operacional deve ser configurado em uma topologia de \textbf{malha fechada} com realimentação negativa. Uma configuração em malha aberta resultaria em um ganho extremamente alto, tornando a região linear praticamente uma linha vertical no gráfico da curva de transferência, o que impossibilitaria uma análise detalhada.
+
+Ao utilizar uma configuração clássica, como a de um \textbf{amplificador inversor} ou \textbf{não-inversor}, a realimentação (geralmente implementada com uma rede de resistores) estabelece um ganho de tensão teórico ($A_v$) que é finito, estável e bem definido. Por exemplo, na configuração inversora, o ganho é dado por:
+$$ A_v = -\frac{R_f}{R_i} $$
+onde $R_f$ é o resistor de realimentação e $R_i$ é o resistor de entrada.
+
+\subsubsection*{2. Aplicação de uma Varredura de Tensão na Entrada}
+
+O método consiste em aplicar uma tensão de entrada DC ($V_{in}$) variável ao circuito. Essa tensão deve ser "varrida" de forma lenta e controlada ao longo de um intervalo de valores. A varredura deve ser ampla o suficiente para forçar o amplificador a operar em seus três regimes distintos:
+\begin{itemize}
+    \item Partindo de um valor que garanta a operação na região de saturação negativa.
+    \item Passando pela faixa de tensões que correspondem à região linear.
+    \item Atingindo um valor que leve o amplificador à região de saturação positiva.
+\end{itemize}
+
+\subsubsection*{3. Mapeamento da Relação entre Saída e Entrada}
+
+Durante a varredura da tensão de entrada, a respectiva tensão de saída ($V_{out}$) é continuamente monitorada e registrada. O conjunto de pares ordenados ($V_{in}$, $V_{out}$) obtido representa a função de transferência do circuito. Ao plotar $V_{out}$ em função de $V_{in}$, a curva de transferência DC é visualizada, revelando as seguintes características:
+
+\begin{itemize}
+    \item \textbf{Regiões de Saturação:} Nas extremidades da curva, observa-se um comportamento horizontal (plateaus), onde $V_{out}$ permanece constante nos valores de saturação positiva ($V_{sat+}$) e negativa ($V_{sat-}$), mesmo com a variação de $V_{in}$. Estes níveis são limitados pelas tensões de alimentação do dispositivo.
+
+    \item \textbf{Região Linear:} Entre as duas regiões de saturação, a curva se comporta como uma linha reta de alta inclinação. A inclinação (ou declive) desta reta representa o ganho DC do circuito ($A_v$) e pode ser calculada como:
+    $$ A_v = \frac{\Delta V_{out}}{\Delta V_{in}} $$
+    A caracterização desta região é fundamental, pois é nela que o dispositivo opera como um amplificador.
+\end{itemize}
+
+Portanto, o procedimento para melhor caracterizar a curva é estabilizar o ganho do amplificador com realimentação e mapear sistematicamente a resposta da saída a uma varredura da tensão de entrada, permitindo a identificação gráfica e o cálculo dos parâmetros que definem a região linear e seus limites de saturação.
+
+
+%======================================================================
+% SEÇÃO 7: CONCLUSÃO
+%======================================================================
+\section{Conclusão}
+
+\paragraph{}
+Neste relatório, foi investigado experimentalmente o comportamento do amplificador operacional (AmpOp) quando configurado em malha aberta para funcionar como um comparador de tensão. O estudo envolveu desde o cálculo teórico de componentes, como o divisor de tensão para estabelecer uma referência de \SI{1}{V}, até a montagem prática e simulação do circuito.
+
+\paragraph{}
+A análise em regime de corrente contínua (CC) validou com sucesso o princípio do comparador. O resultado experimental demonstrou que o LED indicador foi acionado a partir de uma tensão de entrada de \SI{1,013}{V}, valor este que se alinha de forma consistente com o limiar teórico projetado de \SI{1}{V}. A pequena diferença observada pode ser atribuída às tolerâncias dos resistores utilizados e às características não ideais do AmpOp, como a sua tensão de offset de entrada.
+
+\paragraph{}
+No ensaio com sinal de corrente alternada (AC), observou-se que o circuito converteu eficazmente uma forma de onda senoidal de entrada em uma onda quadrada na saída. As medições no osciloscópio confirmaram que a transição da saída entre os níveis de saturação positiva e negativa ocorria precisamente nos instantes em que a tensão de entrada ultrapassava a tensão de referência.
+
+\paragraph{}
+Os resultados obtidos na prática apresentaram alta correlação com as formas de onda geradas nas simulações via software LTspice. Desta forma, conclui-se que o experimento atingiu seus objetivos, permitindo a comprovação prática da teoria de funcionamento do amplificador operacional como comparador e solidificando a compreensão de sua resposta em malha aberta.
+
+%======================================================================
+% SEÇÃO 8: REFERÊNCIAS
+%======================================================================
+\begin{thebibliography}{9}
+
+\bibitem{nilsson}
+NILSSON, James W.; RIEDEL, Susan A. \textit{Circuitos Elétricos}. 10. ed.
+
+\bibitem{dorf}
+DORF, Richard C.; SVOBODA, James A. \textit{Introdução aos Circuitos Elétricos}. 9. ed. Rio de Janeiro: LTC, 2015.
+
+\end{thebibliography}
+
+
+\end{document}
